@@ -1,7 +1,7 @@
 package main
 
-import "github.com/c2fo/gull/lib/cli"
+import "github.com/c2fo/gull/lib/ui"
 
 func main() {
-	cli.Launch()
+	ui.Launch()
 }
