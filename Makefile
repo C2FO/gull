@@ -1,31 +1,19 @@
-SOURCE=./...
+SOURCE := ./source/...
 
-all: 
-	godep test
-
-godep:
-	go get github.com/tools/godep
-
-savedeps:
-	godep save $(SOURCE)
-
-loaddeps:
-	godep restore
-
-install: build
+build: installdeps
 	go install -v $(SOURCE)
 
-build:
-	go build -v $(SOURCE)
+installdeps: 
+	glide install
 
-integration-loud:
-	godep go test -v -tags=integration -timeout 30m $(SOURCE)
+integration-loud: build
+	go test -v -tags=integration -timeout 30m $(SOURCE)
 
-integration: 
-	godep go test -tags=integration -timeout 30m $(SOURCE)
+integration: build
+	go test -tags=integration -timeout 30m $(SOURCE)
 
-test-loud:
-	godep go test -v $(SOURCE)
+test-loud: build
+	go test -v $(SOURCE)
 
-test:
-	godep go test $(SOURCE)
+test: build
+	go test $(SOURCE)
