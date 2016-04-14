@@ -1,6 +1,8 @@
-hash: 67d7564d4e52cadbcb341506c74a7a8b0a1095a61b423c3d1677e44e1f765067
-updated: 2016-04-13T14:31:06.58523996-05:00
+hash: 8c2f5e7c12b6eb5cc1e21cd56cbae6e779ed8f7dc6b08592301ebaada02ed873
+updated: 2016-04-13T15:21:30.699675659-05:00
 imports:
 - name: github.com/codegangsta/cli
   version: a65b733b303f0055f8d324d805f393cd3e7a7904
+- name: github.com/stretchr/testify
+  version: bcd9e3389dd03b0b668d11f4d462a6af6c2dfd60
 devImports: []
