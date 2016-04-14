@@ -1,0 +1,11 @@
+go_import_path: github.com/c2fo/gull
+
+language: go
+go: 
+ - 1.6
+
+script:
+ - make test-loud
+
+install:
+  - go get github.com/Masterminds/glide
