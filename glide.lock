@@ -1,6 +1,8 @@
-hash: 8c2f5e7c12b6eb5cc1e21cd56cbae6e779ed8f7dc6b08592301ebaada02ed873
-updated: 2016-04-13T15:21:30.699675659-05:00
+hash: 827029986b8808850e1da323d74fb0cf90e1776ca8f31409afd0da532fea0669
+updated: 2016-04-14T15:10:42.246350203-05:00
 imports:
+- name: github.com/cloudfoundry-incubator/candiedyaml
+  version: 5cef21e2e4f0fd147973b558d4db7395176bcd95
 - name: github.com/codegangsta/cli
   version: a65b733b303f0055f8d324d805f393cd3e7a7904
 - name: github.com/stretchr/testify

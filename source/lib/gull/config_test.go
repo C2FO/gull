@@ -3,24 +3,21 @@ package gull
 import (
 	"testing"
 
+	"github.com/c2fo/gull/source/lib/gull/testdata"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 )
 
-type IngestTestSuite struct {
+type ConfigTestSuite struct {
 	suite.Suite
-	JsonSample1 string
 }
 
-func TestIngestSuite(t *testing.T) {
-	testSuite := IngestTestSuite{
-		JsonSample1: "{\"*\":{\"services\":[\"well\",\"hi\",\"there\"],\"enableLogging\":false},\"production\": {\"enableLogging\":true}}",
-	}
-	suite.Run(t, &testSuite)
+func TestConfigSuite(t *testing.T) {
+	suite.Run(t, new(ConfigTestSuite))
 }
 
-func (suite *IngestTestSuite) TestParseJSONString() {
-	result, err := NewConfigFromJson(suite.JsonSample1)
+func (suite *ConfigTestSuite) TestParseJSONString() {
+	result, err := NewConfigFromJson(testdata.ValidJsonConfig1)
 
 	assert.Nil(suite.T(), err)
 	leaf, err := result.GetPath("/default/enableLogging")
@@ -28,8 +25,8 @@ func (suite *IngestTestSuite) TestParseJSONString() {
 	assert.Equal(suite.T(), "false", leaf)
 }
 
-func (suite *IngestTestSuite) TestParseJSONArray() {
-	result, err := NewConfigFromJson(suite.JsonSample1)
+func (suite *ConfigTestSuite) TestParseJSONArray() {
+	result, err := NewConfigFromJson(testdata.ValidJsonConfig1)
 
 	assert.Nil(suite.T(), err)
 	leaf, err := result.GetPath("/default/services")
@@ -38,8 +35,8 @@ func (suite *IngestTestSuite) TestParseJSONArray() {
 	assert.Equal(suite.T(), "[well hi there]", leaf)
 }
 
-func (suite *IngestTestSuite) TestInvalidPath() {
-	result, err := NewConfigFromJson(suite.JsonSample1)
+func (suite *ConfigTestSuite) TestInvalidPath() {
+	result, err := NewConfigFromJson(testdata.ValidJsonConfig1)
 
 	assert.Nil(suite.T(), err)
 	_, err = result.GetPath("/invalid/services")
