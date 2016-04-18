@@ -20,7 +20,7 @@ func (suite *ConfigTestSuite) TestParseJSONString() {
 	result, err := NewConfigFromJson(testdata.ValidJsonConfig1)
 
 	assert.Nil(suite.T(), err)
-	leaf, err := result.GetPath("/default/enableLogging")
+	leaf, err := result.Leaves.GetValue("/default/enableLogging")
 	assert.Nil(suite.T(), err)
 	assert.Equal(suite.T(), "false", leaf)
 }
@@ -29,7 +29,7 @@ func (suite *ConfigTestSuite) TestParseJSONArray() {
 	result, err := NewConfigFromJson(testdata.ValidJsonConfig1)
 
 	assert.Nil(suite.T(), err)
-	leaf, err := result.GetPath("/default/services")
+	leaf, err := result.Leaves.GetValue("/default/services")
 
 	assert.Nil(suite.T(), err)
 	assert.Equal(suite.T(), "[well hi there]", leaf)
@@ -39,7 +39,7 @@ func (suite *ConfigTestSuite) TestInvalidPath() {
 	result, err := NewConfigFromJson(testdata.ValidJsonConfig1)
 
 	assert.Nil(suite.T(), err)
-	_, err = result.GetPath("/invalid/services")
+	_, err = result.Leaves.GetValue("/invalid/services")
 
 	assert.NotNil(suite.T(), err)
 }

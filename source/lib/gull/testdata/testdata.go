@@ -1,12 +1,26 @@
 package testdata
 
-var ValidJsonConfig1 = "{\"*\":{\"services\":[\"well\",\"hi\",\"there\"],\"enableLogging\":false},\"production\": {\"enableLogging\":true}}"
+var ValidEtcdHostUrl = "http://localhost:4002/v2/keys"
+
+var ValidJsonConfig1 = `
+    {
+        "*":{
+            "services":["well", "hi", "there"],
+            "enableLogging": false
+        },
+        "production":{
+            "enableLogging":true
+        }
+    }
+`
 
 var ValidYamlMigration1 = `---
           up:
-            - path: "/default/services"
-              value: "[well hi there]"
+            entries:
+              - path: "/default/services"
+                value: "[well hi there]"
           down:
-            - path: "/default/services"
-              value: "delete"
+            entries:
+              - path: "/default/services"
+                value: "delete"
         `

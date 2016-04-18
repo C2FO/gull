@@ -6,6 +6,7 @@ go:
 
 script:
  - make test-loud
+ - make test-integration-loud
 
 install:
   - go get github.com/Masterminds/glide
