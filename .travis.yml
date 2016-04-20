@@ -4,9 +4,16 @@ language: go
 go: 
  - 1.6
 
-script:
- - make test-loud
- - make test-integration-loud
+before_install:
+  - curl -L https://github.com/coreos/etcd/releases/download/v2.3.1/etcd-v2.3.1-linux-amd64.tar.gz > ./etcd.tar.gz
+  - tar -xvf etcd.tar.gz
 
 install:
   - go get github.com/Masterminds/glide
+
+before_script:
+  - ./etcd-v2.3.1-linux-amd64/etcd --listen-client-urls 'http://localhost:4002' --advertise-client-urls 'http://localhost:4002' &
+
+script:
+ - make test-loud
+ - make integration-loud

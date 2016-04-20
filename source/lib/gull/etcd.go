@@ -28,9 +28,14 @@ func (emt *EtcdMigrationTarget) Set(path string, value string) error {
 	}.Do()
 	if response != nil {
 		defer func() { _ = response.Body.Close() }()
-	}
-	if response.Response.StatusCode != 200 {
-		return fmt.Errorf("ETCD returned HTTP %v on a PUT for [%v]->[%v]", path, value)
+		if response.Response != nil {
+			statusCode := response.Response.StatusCode
+			if statusCode != 200 && statusCode != 201 {
+				return fmt.Errorf("etcd returned HTTP %v on a PUT for [%v]->[%v]", statusCode, path, value)
+			}
+		}
+	} else {
+		return fmt.Errorf("etcd did not sent a response on a PUT for [%v]->[%v]", path, value)
 	}
 	return err
 }
