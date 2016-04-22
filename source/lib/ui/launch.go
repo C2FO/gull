@@ -62,6 +62,15 @@ func Launch() {
 				ParseOptions(c).Status()
 			},
 		},
+		{
+			Name:    "convert",
+			Aliases: []string{"c"},
+			Usage:   "Convert application configuration into gull migrations",
+			Flags:   subcommandFlags,
+			Action: func(c *cli.Context) {
+				ParseOptions(c).Convert()
+			},
+		},
 	}
 
 	app.Run(os.Args)
