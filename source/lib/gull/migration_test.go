@@ -11,16 +11,28 @@ import (
 
 type MigrationTestSuite struct {
 	suite.Suite
+	Target MigrationTarget
 }
 
 func TestMigrationSuite(t *testing.T) {
 	suite.Run(t, new(MigrationTestSuite))
 }
 
-func (suite *MigrationTestSuite) TestApplyMigration() {
-	result, err := NewMigrationFromYaml(testdata.ValidYamlMigration1, true)
-
+func (suite *MigrationTestSuite) TestDryApplyYamlBasedMigration() {
+	result, err := NewMigrationFromYaml(testdata.ValidYamlMigration1)
 	assert.Nil(suite.T(), err)
-	err = result.ApplyUp()
+
+	err = result.Up.Apply(true, suite.Target)
+	assert.Nil(suite.T(), err)
+}
+
+func (suite *MigrationTestSuite) TestDryApplyConfigBasedMigration() {
+	config, err := NewConfigFromJson(testdata.ValidJsonConfig1)
+	assert.Nil(suite.T(), err)
+
+	result, err := NewMigrationFromConfig(config, nil)
+	assert.Nil(suite.T(), err)
+
+	err = result.Up.Apply(true, suite.Target)
 	assert.Nil(suite.T(), err)
 }
