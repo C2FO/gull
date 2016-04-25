@@ -3,12 +3,11 @@ package gull
 import (
 	"fmt"
 	"io/ioutil"
-	"os"
 	"path"
 	"strings"
 	"time"
 
-	"github.com/cloudfoundry-incubator/candiedyaml"
+	"github.com/go-yaml/yaml"
 )
 
 type Migration struct {
@@ -21,9 +20,9 @@ type Migration struct {
 
 func NewMigrationFromGull(name string, source string) (*Migration, error) {
 	migration := newMigration(name)
-	reader := strings.NewReader(source)
-	decoder := candiedyaml.NewDecoder(reader)
-	err := decoder.Decode(migration)
+
+	err := yaml.Unmarshal([]byte(source), &migration)
+
 	return migration, err
 }
 
@@ -62,17 +61,19 @@ func GetMigrationNameFromConfigName(filePath string) string {
 	return fmt.Sprintf("%v-%v.%v", id, strings.Replace(name, ".json", "", 1), "yaml")
 }
 
+func (m *Migration) ConvertToYaml() (string, error) {
+	yamlBytes, err := yaml.Marshal(m.Content)
+	return string(yamlBytes), err
+
+}
+
 func (m *Migration) WriteToFile(filePath string) error {
-	target, err := os.Create(filePath)
-	if target != nil {
-		defer func() { _ = target.Close() }()
-	}
+	rawYaml, err := m.ConvertToYaml()
 	if err != nil {
 		return err
 	}
 
-	encoder := candiedyaml.NewEncoder(target)
-	return encoder.Encode(m.Content)
+	return ioutil.WriteFile(filePath, []byte(rawYaml), 0644)
 }
 
 func migrationNameFromPath(filePath string) string {

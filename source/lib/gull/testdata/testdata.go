@@ -21,3 +21,23 @@ content:
     - path: "/default/services"
       value: "[well hi there]"
 `
+
+var ValidJsonConfig2 = `
+{
+    "*": {
+        "logging": {
+            "c2fo": {
+                "level": "INFO",
+                "appenders": [
+                    {
+                        "wrapStyle": false,
+                        "type": "ConsoleAppender",
+                        "pattern": "\u001b[36m{name}\u001b[0m {gid} {pid} {levelNameColored} - {message}"
+                    }
+                ]
+            }
+        }
+    }
+}
+
+`

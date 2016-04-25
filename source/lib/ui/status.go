@@ -1,8 +1,24 @@
 package ui
 
-import "log"
+import (
+	"fmt"
+
+	"github.com/codegangsta/cli"
+)
+
+func GetStatusCli() cli.Command {
+	return cli.Command{
+		Name:    "status",
+		Aliases: []string{"s"},
+		Usage:   "Display what gull knows about for one environment",
+		Flags:   subcommandFlags,
+		Action: func(c *cli.Context) {
+			ParseOptions(c).Status()
+		},
+	}
+}
 
 func (o *Options) Status() {
-	log.Printf("The environment name is [%s] and the etcdHost is [%s]", o.Environment, o.EtcdHost)
-	log.Printf("TODO: Implement the Status subcommand")
+	fmt.Printf("The environment name is [%s] and the etcdHost is [%s]\n", o.Environment, o.EtcdHost)
+	fmt.Printf("TODO: Implement the Status subcommand\n")
 }
