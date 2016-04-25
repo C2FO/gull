@@ -29,9 +29,9 @@ func (suite *IntegrationMigrateSuite) TestLoadConfigIntoEtcd() {
 	config, err := NewConfigFromJson(testdata.ValidJsonConfig1)
 	assert.Nil(suite.T(), err)
 
-	migration, err := NewMigrationFromConfig(config, nil)
+	migration, err := NewMigrationFromConfig("", config)
 	assert.Nil(suite.T(), err)
 
-	err = migration.Up.Apply(false, suite.Target)
+	err = migration.Content.Apply(suite.Target)
 	assert.Nil(suite.T(), err)
 }

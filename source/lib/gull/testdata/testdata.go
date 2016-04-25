@@ -14,13 +14,10 @@ var ValidJsonConfig1 = `
     }
 `
 
-var ValidYamlMigration1 = `---
-          up:
-            entries:
-              - path: "/default/services"
-                value: "[well hi there]"
-          down:
-            entries:
-              - path: "/default/services"
-                value: "delete"
-        `
+var ValidYamlMigration1 = `
+---
+content:
+  entries:
+    - path: "/default/services"
+      value: "[well hi there]"
+`

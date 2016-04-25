@@ -15,5 +15,4 @@ before_script:
   - ./etcd-v2.3.1-linux-amd64/etcd --listen-client-urls 'http://localhost:4002' --advertise-client-urls 'http://localhost:4002' &
 
 script:
- - make test-loud
  - make integration-loud

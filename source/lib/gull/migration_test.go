@@ -15,24 +15,26 @@ type MigrationTestSuite struct {
 }
 
 func TestMigrationSuite(t *testing.T) {
-	suite.Run(t, new(MigrationTestSuite))
+	mtSuite := new(MigrationTestSuite)
+	mtSuite.Target = &testdata.MockMigrationTarget{}
+	suite.Run(t, mtSuite)
 }
 
-func (suite *MigrationTestSuite) TestDryApplyYamlBasedMigration() {
-	result, err := NewMigrationFromYaml(testdata.ValidYamlMigration1)
+func (suite *MigrationTestSuite) TestApplyYamlBasedMigration() {
+	result, err := NewMigrationFromGull("", testdata.ValidYamlMigration1)
 	assert.Nil(suite.T(), err)
 
-	err = result.Up.Apply(true, suite.Target)
+	err = result.Content.Apply(suite.Target)
 	assert.Nil(suite.T(), err)
 }
 
-func (suite *MigrationTestSuite) TestDryApplyConfigBasedMigration() {
+func (suite *MigrationTestSuite) TestApplyConfigBasedMigration() {
 	config, err := NewConfigFromJson(testdata.ValidJsonConfig1)
 	assert.Nil(suite.T(), err)
 
-	result, err := NewMigrationFromConfig(config, nil)
+	result, err := NewMigrationFromConfig("", config)
 	assert.Nil(suite.T(), err)
 
-	err = result.Up.Apply(true, suite.Target)
+	err = result.Content.Apply(suite.Target)
 	assert.Nil(suite.T(), err)
 }
