@@ -3,6 +3,9 @@ package gull
 import (
 	"os"
 	"path/filepath"
+	"strings"
+
+	"github.com/c2fo/gull/source/lib/common"
 )
 
 type Convert struct {
@@ -28,6 +31,9 @@ func (c *Convert) ConvertDirectory(dirPath string) error {
 }
 
 func (c *Convert) ConvertFile(filePath string) error {
+	if strings.Contains(filePath, common.DefaultGullDirectory) {
+		return nil
+	}
 	migration, err := NewMigrationFromConfigFile(filePath)
 	if err != nil {
 		return err

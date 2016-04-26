@@ -4,7 +4,7 @@ import:
   version: a65b733b303f0055f8d324d805f393cd3e7a7904
 - package: github.com/stretchr/testify
   version: bcd9e3389dd03b0b668d11f4d462a6af6c2dfd60
-- package: github.com/cloudfoundry-incubator/candiedyaml
-  version: 5cef21e2e4f0fd147973b558d4db7395176bcd95
 - package: github.com/franela/goreq
   version: 3ddeded65be21dacb5a2e2d0b95af9ff6862a2b5
+- package: github.com/go-yaml/yaml
+  verion: a83829b6f1293c91addabc89d0571c246397bbf4
