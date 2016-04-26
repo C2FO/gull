@@ -3,6 +3,7 @@ package gull
 import (
 	"fmt"
 	"sort"
+	"strings"
 )
 
 type Migrations struct {
@@ -50,10 +51,31 @@ func (m *Migrations) Get(id string) (*Migration, error) {
 }
 
 func (m *Migrations) Apply(target MigrationTarget) error {
-	for _, entry := range m.entries {
-		err := entry.Content.Apply(target)
+	environments := []string{"default"}
+	if target.GetEnvironment() != "default" && target.GetEnvironment() != "" {
+		environments = append(environments, target.GetEnvironment())
+	}
+	for _, environment := range environments {
+		err := m.apply(target, environment, target.GetEnvironment())
 		if err != nil {
 			return err
+		}
+	}
+	return nil
+}
+
+func (m *Migrations) apply(target MigrationTarget, sourceEnvironment string, destinationEnvironment string) error {
+	source := fmt.Sprintf("/%v/", sourceEnvironment)
+	dest := fmt.Sprintf("/%v/", destinationEnvironment)
+	for _, entry := range m.entries {
+		for _, leaf := range entry.Content.Entries {
+			if strings.Contains(leaf.Path, source) {
+				path := strings.Replace(leaf.Path, source, dest, 1)
+				err := target.Set(path, leaf.Value)
+				if err != nil {
+					return err
+				}
+			}
 		}
 	}
 	return nil

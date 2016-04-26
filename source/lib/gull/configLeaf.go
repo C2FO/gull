@@ -4,6 +4,9 @@ import "fmt"
 
 type MigrationTarget interface {
 	Set(path string, value string) error
+	GetEnvironment() string
+	GetAll() map[string]string
+	Debug()
 }
 
 type ConfigLeaf struct {

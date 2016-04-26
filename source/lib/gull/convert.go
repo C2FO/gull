@@ -23,14 +23,11 @@ func NewConvert(destinationDir string) (*Convert, error) {
 }
 
 func (c *Convert) ConvertDirectory(dirPath string) error {
-	absPath, err := filepath.Abs(dirPath)
-	if err != nil {
-		return err
-	}
-	return filepath.Walk(absPath, c.convertFileWalk)
+	return filepath.Walk(dirPath, c.convertFileWalk)
 }
 
 func (c *Convert) ConvertFile(filePath string) error {
+	//TODO Handle converting a config file that doesn't have multiple environments in each config file.
 	if strings.Contains(filePath, common.DefaultGullDirectory) {
 		return nil
 	}
