@@ -6,7 +6,7 @@ import (
 	"github.com/codegangsta/cli"
 )
 
-var defaultEtcdHost = "http://localhost:4002"
+var defaultEtcdHost = "http://localhost:4002/v2/keys"
 
 type GullCommand interface {
 	GetCliCommand() cli.Command
@@ -36,6 +36,7 @@ func Launch() {
 	app.Usage = "etcd configuration migration management system"
 	app.Commands = []cli.Command{
 		new(ConvertCommand).GetCliCommand(),
+		new(UpCommand).GetCliCommand(),
 	}
 
 	app.Run(os.Args)

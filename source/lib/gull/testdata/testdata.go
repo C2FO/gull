@@ -16,10 +16,9 @@ var ValidJsonConfig1 = `
 
 var ValidYamlMigration1 = `
 ---
-content:
-  entries:
-    - path: "/default/services"
-      value: "[well hi there]"
+entries:
+- path: "/default/services"
+  value: "[well hi there]"
 `
 
 var ValidJsonConfig2 = `

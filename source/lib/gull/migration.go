@@ -21,7 +21,7 @@ type Migration struct {
 func NewMigrationFromGull(name string, source string) (*Migration, error) {
 	migration := newMigration(name)
 
-	err := yaml.Unmarshal([]byte(source), &migration)
+	err := yaml.Unmarshal([]byte(source), &migration.Content)
 
 	return migration, err
 }

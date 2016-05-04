@@ -20,7 +20,7 @@ type IntegrationMigrateSuite struct {
 
 func TestIntegrationMigrateSuite(t *testing.T) {
 	migrateSuite := &IntegrationMigrateSuite{
-		Target: NewEtcdMigrationTarget(testdata.ValidEtcdHostUrl),
+		Target: NewEtcdMigrationTarget(testdata.ValidEtcdHostUrl, "default"),
 	}
 	suite.Run(t, migrateSuite)
 }
