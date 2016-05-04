@@ -38,7 +38,10 @@ func (u *Up) IngestFile(path string, f os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
-		u.Migrations.Add(migration)
+		err = u.Migrations.Add(migration)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
