@@ -7,12 +7,15 @@ go:
 before_install:
   - curl -L https://github.com/coreos/etcd/releases/download/v2.3.1/etcd-v2.3.1-linux-amd64.tar.gz > ./etcd.tar.gz
   - tar -xvf etcd.tar.gz
-
-install:
   - go get github.com/Masterminds/glide
 
+install:  
+  - make
+
 before_script:
-  - ./etcd-v2.3.1-linux-amd64/etcd --listen-client-urls 'http://localhost:4002' --advertise-client-urls 'http://localhost:4002' &
+  - ./etcd-v2.3.1-linux-amd64/etcd --listen-client-urls 'http://localhost:4002' --advertise-client-urls 'http://localhost:4002' > /dev/null 2>&1 &
+  - script/analyze-code.sh install
+  - script/analyze-code.sh
 
 script:
  - make integration-loud

@@ -77,7 +77,7 @@ func (suite *MigrationsTestSuite) TestApplyMultipleMigrations() {
 		migration, err := NewMigrationFromGull("", testdata.ValidYamlMigration1)
 		assert.Nil(suite.T(), err)
 		err = migrations.Add(migration)
-		assert.Nil(suite.T(), nil)
+		assert.Nil(suite.T(), err)
 	}
 
 	err := migrations.Apply(suite.Target)
