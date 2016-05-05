@@ -58,7 +58,9 @@ func NewMigrationFromConfigFile(filePath string) (*Migration, error) {
 func GetMigrationNameFromConfigName(filePath string) string {
 	id := createId()
 	name := migrationNameFromPath(filePath)
-	return fmt.Sprintf("%v-%v.%v", id, strings.Replace(name, ".json", "", 1), "yaml")
+	name = strings.Replace(name, ".json", "", 1)
+	name = strings.Replace(name, " ", "-", -1)
+	return fmt.Sprintf("%v-%v.%v", id, name, "yaml")
 }
 
 func (m *Migration) ConvertToYaml() (string, error) {
