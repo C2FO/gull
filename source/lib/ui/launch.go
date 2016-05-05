@@ -37,6 +37,7 @@ func Launch() {
 	app.Commands = []cli.Command{
 		new(ConvertCommand).GetCliCommand(),
 		new(UpCommand).GetCliCommand(),
+		new(StatusCommand).GetCliCommand(),
 	}
 
 	err := app.Run(os.Args)

@@ -6,7 +6,6 @@ import (
 
 	"github.com/c2fo/gull/source/lib/common"
 	"github.com/c2fo/gull/source/lib/gull"
-	"github.com/c2fo/gull/source/lib/gull/testdata"
 	"github.com/codegangsta/cli"
 )
 
@@ -52,10 +51,9 @@ func (uc *UpCommand) GetFlags() []cli.Flag {
 
 func (uc *UpCommand) GetCliCommand() cli.Command {
 	return cli.Command{
-		Name:    "up",
-		Aliases: []string{"u"},
-		Usage:   "Migrate to the latest configuration",
-		Flags:   uc.GetFlags(),
+		Name:  "up",
+		Usage: "Migrate to the latest configuration",
+		Flags: uc.GetFlags(),
 		Action: func(c *cli.Context) {
 			uc.ParseOptions(c)
 			uc.Up()
@@ -88,11 +86,11 @@ func (uc *UpCommand) Up() {
 	// All migrations will then be walked again, applying any migrations containing the target environment.
 	var target gull.MigrationTarget
 	if uc.DryRun {
-		target = testdata.NewMockMigrationTarget(uc.Environment)
+		target = gull.NewMockMigrationTarget(uc.Environment)
 	} else {
 		target = gull.NewEtcdMigrationTarget(uc.EtcdHostUrl, uc.Environment)
 	}
-	up := gull.NewUp(uc.SourceDirectory, uc.Environment, target)
+	up := gull.NewUp(uc.SourceDirectory, target)
 	err := up.Migrate()
 	if err != nil {
 		fmt.Printf("An error occurred while performing the migration: [%+v]\n", err)
