@@ -9,6 +9,7 @@ import (
 )
 
 type DownCommand struct {
+	Application     string
 	Environment     string
 	EtcdHostUrl     string
 	SourceDirectory string
@@ -18,6 +19,11 @@ type DownCommand struct {
 
 func (dc *DownCommand) GetFlags() []cli.Flag {
 	return []cli.Flag{
+		cli.StringFlag{
+			Name:   "application, a",
+			Usage:  "application to target for configuration migration",
+			EnvVar: "GULL_APPLICATION",
+		},
 		cli.StringFlag{
 			Name:   "environment, e",
 			Usage:  "system to target for configuration migration",
@@ -58,6 +64,12 @@ func (dc *DownCommand) ParseOptions(context *cli.Context) {
 	dc.Verbose = context.Bool("verbose")
 	dc.DryRun = context.Bool("dryrun")
 
+	dc.Application = context.String("application")
+	if dc.Application == "" {
+		fmt.Println("application was not found, but is required.")
+		os.Exit(1)
+	}
+
 	dc.Environment = context.String("environment")
 	if dc.Environment == "default" {
 		if dc.Verbose {
@@ -77,9 +89,9 @@ func (dc *DownCommand) Down() {
 	// Then all migrations that were stored in etcd for that environment are applied, ignoring the latest migration.
 	var target gull.MigrationTarget
 	if dc.DryRun {
-		target = gull.NewMockMigrationTarget(dc.Environment)
+		target = gull.NewMockMigrationTarget(dc.Application, dc.Environment)
 	} else {
-		target = gull.NewEtcdMigrationTarget(dc.EtcdHostUrl, dc.Environment)
+		target = gull.NewEtcdMigrationTarget(dc.EtcdHostUrl, dc.Application, dc.Environment)
 	}
 	down := gull.NewDown(target)
 	err := down.Migrate()
