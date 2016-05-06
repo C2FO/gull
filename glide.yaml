@@ -10,5 +10,7 @@ import:
   version: a83829b6f1293c91addabc89d0571c246397bbf4
 - package: github.com/brockwood/gostrufig
   version: b30cb30387a9cba3c970644c880903739e94f5f2
-  subpackages:
-    - github.com/coreos/go-etcd/etcd
+- package: github.com/coreos/go-etcd
+  version: 003851be7bb0694fe3cc457a49529a19388ee7cf
+- package: github.com/ugorji/go
+  version: a396ed22fc049df733440d90efe17475e3929ccb
