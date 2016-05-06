@@ -1,6 +1,9 @@
 package gull
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 type MigrationTarget interface {
 	Set(path string, value string) error
@@ -10,6 +13,7 @@ type MigrationTarget interface {
 	Debug()
 	GetStatus() (*MigrationState, error)
 	SetStatus(state *MigrationState) error
+	DeleteEnvironment() error
 }
 
 type MockMigrationTarget struct {
@@ -36,6 +40,19 @@ func (mmt *MockMigrationTarget) Get(path string) (string, error) {
 		return "", fmt.Errorf("Unable to find path %v in the mock store", path)
 	}
 	return val, nil
+}
+
+func (mmt *MockMigrationTarget) DeleteEnvironment() error {
+	targets := []string{}
+	for k, _ := range mmt.Storage {
+		if strings.Contains(k, mmt.GetEnvironment()) {
+			targets = append(targets, k)
+		}
+	}
+	for _, target := range targets {
+		delete(mmt.Storage, target)
+	}
+	return nil
 }
 
 func (mmt *MockMigrationTarget) GetEnvironment() string {

@@ -55,5 +55,39 @@ func (suite *IntegrationMigrateSuite) TestMigrationStateStorageAndRetrieval() {
 
 	first, err := state.Migrations.First()
 	assert.Nil(suite.T(), err)
-	assert.Equal(suite.T(), "/default/alice", first.Content.Entries[0].Path)
+	var leaf ConfigLeaf
+	for _, entry := range first.Content.Entries {
+		if entry.Path == "/default/alice" {
+			leaf = entry
+		}
+	}
+	assert.NotNil(suite.T(), leaf)
+}
+
+func (suite *IntegrationMigrateSuite) TestMigrateDown() {
+	transform, err := NewConvert(testdata.ConvertDestination1)
+	assert.Nil(suite.T(), err)
+
+	err = transform.ConvertDirectory(testdata.ConvertSource1)
+	assert.Nil(suite.T(), err)
+
+	up := NewUp(testdata.ConvertDestination1, suite.Target)
+	up.Migrate()
+
+	down := NewDown(suite.Target)
+	err = down.Migrate()
+	assert.Nil(suite.T(), err)
+	assert.Equal(suite.T(), up.Migrations.Count()-1, down.Migrations.Count())
+
+	upFirst, err := up.Migrations.First()
+	assert.Nil(suite.T(), err)
+	downFirst, err := down.Migrations.First()
+	assert.Nil(suite.T(), err)
+	assert.Equal(suite.T(), upFirst.Id, downFirst.Id)
+
+	upLast, err := up.Migrations.Last()
+	assert.Nil(suite.T(), err)
+	downLast, err := down.Migrations.Last()
+	assert.Nil(suite.T(), err)
+	assert.NotEqual(suite.T(), upLast.Id, downLast.Id)
 }

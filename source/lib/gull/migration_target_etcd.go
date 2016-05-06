@@ -43,11 +43,11 @@ func (emt *EtcdMigrationTarget) Set(path string, value string) error {
 		ContentType: "application/x-www-form-urlencoded",
 	}.Do()
 	if response != nil {
-		defer func() { _ = response.Body.Close() }()
+		_ = response.Body.Close()
 		if response.Response != nil {
 			statusCode := response.Response.StatusCode
 			if statusCode != 200 && statusCode != 201 {
-				return fmt.Errorf("etcd @ [%v]returned HTTP %v on a PUT for [%v]->[%v]", emt.EtcdHostUrl, statusCode, path, value)
+				return fmt.Errorf("etcd @ [%v] returned HTTP %v on a PUT for [%v]->[%v]", emt.EtcdHostUrl, statusCode, path, value)
 			}
 		}
 	} else {
@@ -78,7 +78,31 @@ func (emt *EtcdMigrationTarget) Get(path string) (string, error) {
 		err = json.Unmarshal(bodyBytes, &etcdResponse)
 		return etcdResponse.Node.Value, err
 	}
-	return "", fmt.Errorf("etcd did not sent a response on a GET for [%v]", path)
+	return "", fmt.Errorf("etcd did not send a response on a GET for [%v]", path)
+}
+
+func (emt *EtcdMigrationTarget) DeleteEnvironment() error {
+	if emt.EtcdHostUrl == "" {
+		return fmt.Errorf("EtcdMigrationTarget's EtcdHostUrl cannot be empty")
+	}
+	storageUrl := fmt.Sprintf("%v/%v%v", emt.EtcdHostUrl, url.QueryEscape(emt.GetEnvironment()), "?dir=true&recursive=true")
+	response, err := goreq.Request{
+		Method: "DELETE",
+		Uri:    storageUrl,
+	}.Do()
+	if err != nil {
+		return err
+	}
+	if response != nil {
+		_ = response.Body.Close()
+		if response.Response != nil {
+			statusCode := response.Response.StatusCode
+			if statusCode != 200 && statusCode != 201 {
+				return fmt.Errorf("etcd @ [%v] returned HTTP %v on a DELETE for [%v]", emt.EtcdHostUrl, statusCode, emt.GetEnvironment())
+			}
+		}
+	}
+	return nil
 }
 
 func (emt *EtcdMigrationTarget) GetEnvironment() string {

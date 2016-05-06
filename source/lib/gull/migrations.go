@@ -69,6 +69,15 @@ func (m *Migrations) Apply(target MigrationTarget) error {
 	return target.SetStatus(migrationState)
 }
 
+func (m *Migrations) Pop() (*Migration, error) {
+	if m.Count() <= 0 {
+		return nil, fmt.Errorf("No migrations found, unable to remove the last element.")
+	}
+	popped := m.Entries[m.Count()-1]
+	m.Entries = m.Entries[:m.Count()-1]
+	return popped, nil
+}
+
 func (m *Migrations) apply(target MigrationTarget, sourceEnvironment string, destinationEnvironment string) error {
 	source := fmt.Sprintf("/%v/", sourceEnvironment)
 	dest := fmt.Sprintf("/%v/", destinationEnvironment)
