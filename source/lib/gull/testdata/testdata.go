@@ -4,6 +4,10 @@ var ConvertDestination1 = "/tmp/test-env-root-json/"
 
 var ConvertSource1 = "testdata/test-env-root-json"
 
+var ConvertDestination2 = "/tmp/gostrufig-json/"
+
+var ConvertSource2 = "testdata/gostrufig-json/"
+
 var ValidEtcdHostUrl = "http://localhost:4002/v2/keys"
 
 var ValidJsonConfig1 = `
@@ -44,3 +48,10 @@ var ValidJsonConfig2 = `
 }
 
 `
+
+type GostrufigTestConfig1 struct {
+	Environment string `cfg-ns:"true" cfg-def:"default"`
+	Alice       []string
+	Lewis       string
+	Lyrics      string
+}

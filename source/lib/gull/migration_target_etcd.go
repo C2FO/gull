@@ -11,6 +11,7 @@ import (
 
 type EtcdMigrationTarget struct {
 	EtcdHostUrl string
+	Application string
 	Environment string
 }
 
@@ -23,9 +24,10 @@ type etcdPair struct {
 	Value string
 }
 
-func NewEtcdMigrationTarget(hostUrl string, environment string) *EtcdMigrationTarget {
+func NewEtcdMigrationTarget(hostUrl string, application string, environment string) *EtcdMigrationTarget {
 	return &EtcdMigrationTarget{
 		EtcdHostUrl: hostUrl,
+		Application: application,
 		Environment: environment,
 	}
 }
@@ -34,7 +36,7 @@ func (emt *EtcdMigrationTarget) Set(path string, value string) error {
 	if emt.EtcdHostUrl == "" {
 		return fmt.Errorf("EtcdMigrationTarget's EtcdHostUrl cannot be empty")
 	}
-	storageUrl := emt.EtcdHostUrl + url.QueryEscape(path)
+	storageUrl := emt.EtcdHostUrl + url.QueryEscape(emt.getAppPath(path))
 	value = fmt.Sprintf("value=%v", url.QueryEscape(value))
 	response, err := goreq.Request{
 		Method:      "PUT",
@@ -47,7 +49,7 @@ func (emt *EtcdMigrationTarget) Set(path string, value string) error {
 		if response.Response != nil {
 			statusCode := response.Response.StatusCode
 			if statusCode != 200 && statusCode != 201 {
-				return fmt.Errorf("etcd @ [%v] returned HTTP %v on a PUT for [%v]->[%v]", emt.EtcdHostUrl, statusCode, path, value)
+				return fmt.Errorf("etcd @ [%v] returned HTTP %v on a PUT for [%v]->[%v]", emt.EtcdHostUrl, statusCode, emt.getAppPath(path), value)
 			}
 		}
 	} else {
@@ -60,7 +62,7 @@ func (emt *EtcdMigrationTarget) Get(path string) (string, error) {
 	if emt.EtcdHostUrl == "" {
 		return "", fmt.Errorf("EtcdMigrationTarget's EtcdHostUrl cannot be empty")
 	}
-	storageUrl := emt.EtcdHostUrl + url.QueryEscape(path)
+	storageUrl := emt.EtcdHostUrl + url.QueryEscape(emt.getAppPath(path))
 	response, err := goreq.Request{
 		Method: "GET",
 		Uri:    storageUrl,
@@ -81,11 +83,23 @@ func (emt *EtcdMigrationTarget) Get(path string) (string, error) {
 	return "", fmt.Errorf("etcd did not send a response on a GET for [%v]", path)
 }
 
+func (emt *EtcdMigrationTarget) getAppPath(path string) string {
+	return "/" + emt.Application + path
+}
+
 func (emt *EtcdMigrationTarget) DeleteEnvironment() error {
+	return emt.remove(emt.GetApplication() + "/" + emt.GetEnvironment())
+}
+
+func (emt *EtcdMigrationTarget) DeleteApplication() error {
+	return emt.remove(emt.GetApplication())
+}
+
+func (emt *EtcdMigrationTarget) remove(root string) error {
 	if emt.EtcdHostUrl == "" {
 		return fmt.Errorf("EtcdMigrationTarget's EtcdHostUrl cannot be empty")
 	}
-	storageUrl := fmt.Sprintf("%v/%v%v", emt.EtcdHostUrl, url.QueryEscape(emt.GetEnvironment()), "?dir=true&recursive=true")
+	storageUrl := fmt.Sprintf("%v/%v%v", emt.EtcdHostUrl, url.QueryEscape(root), "?dir=true&recursive=true")
 	response, err := goreq.Request{
 		Method: "DELETE",
 		Uri:    storageUrl,
@@ -98,7 +112,7 @@ func (emt *EtcdMigrationTarget) DeleteEnvironment() error {
 		if response.Response != nil {
 			statusCode := response.Response.StatusCode
 			if statusCode != 200 && statusCode != 201 {
-				return fmt.Errorf("etcd @ [%v] returned HTTP %v on a DELETE for [%v]", emt.EtcdHostUrl, statusCode, emt.GetEnvironment())
+				return fmt.Errorf("etcd @ [%v] returned HTTP %v on a DELETE for [%v]", emt.EtcdHostUrl, statusCode, root)
 			}
 		}
 	}
@@ -107,6 +121,10 @@ func (emt *EtcdMigrationTarget) DeleteEnvironment() error {
 
 func (emt *EtcdMigrationTarget) GetEnvironment() string {
 	return emt.Environment
+}
+
+func (emt *EtcdMigrationTarget) GetApplication() string {
+	return emt.Application
 }
 
 func (emt *EtcdMigrationTarget) GetAll() map[string]string {
@@ -136,5 +154,5 @@ func (emt *EtcdMigrationTarget) GetStatus() (*MigrationState, error) {
 }
 
 func (emt *EtcdMigrationTarget) getStatusPath() string {
-	return fmt.Sprintf("/%v/_gull/migration/state", emt.GetEnvironment())
+	return fmt.Sprintf("/%v/_gull/state", emt.GetEnvironment())
 }

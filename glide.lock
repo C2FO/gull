@@ -1,12 +1,18 @@
-hash: c4724775b5e523ff216e20768120e6253417b2f50c606fca1a82efdc38656de6
-updated: 2016-04-26T10:45:29.453624633-05:00
+hash: 07035b8fd9090c68300bb9fd9f7b5bc2775051294a33755f972a18a14bf56f27
+updated: 2016-05-06T12:24:29.203813841-05:00
 imports:
+- name: github.com/brockwood/gostrufig
+  version: b30cb30387a9cba3c970644c880903739e94f5f2
 - name: github.com/codegangsta/cli
   version: a65b733b303f0055f8d324d805f393cd3e7a7904
+- name: github.com/coreos/go-etcd
+  version: 003851be7bb0694fe3cc457a49529a19388ee7cf
 - name: github.com/franela/goreq
   version: 3ddeded65be21dacb5a2e2d0b95af9ff6862a2b5
 - name: github.com/go-yaml/yaml
   version: a83829b6f1293c91addabc89d0571c246397bbf4
 - name: github.com/stretchr/testify
   version: bcd9e3389dd03b0b668d11f4d462a6af6c2dfd60
+- name: github.com/ugorji/go
+  version: a396ed22fc049df733440d90efe17475e3929ccb
 devImports: []

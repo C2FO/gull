@@ -24,8 +24,7 @@ func (s *Status) Check() error {
 		return nil
 	} else {
 		fmt.Printf("Current migration tip is [%v]\n", last.Id)
-		fmt.Printf("This environment was first migrated at [%v]\n", migrationState.Created)
-		fmt.Printf("This environment was last migrated at [%v]\n", migrationState.Updated)
+		fmt.Printf("This environment was migrated at [%v]\n", migrationState.Created)
 		fmt.Printf("There are [%v] applied migrations\n", migrationState.Migrations.Count())
 	}
 	return nil

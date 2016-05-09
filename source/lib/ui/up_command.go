@@ -10,6 +10,7 @@ import (
 )
 
 type UpCommand struct {
+	Application     string
 	Environment     string
 	EtcdHostUrl     string
 	SourceDirectory string
@@ -20,8 +21,13 @@ type UpCommand struct {
 func (uc *UpCommand) GetFlags() []cli.Flag {
 	return []cli.Flag{
 		cli.StringFlag{
+			Name:   "application, a",
+			Usage:  "application to target for configuration migration",
+			EnvVar: "GULL_APPLICATION",
+		},
+		cli.StringFlag{
 			Name:   "environment, e",
-			Usage:  "system to target for configuration migration",
+			Usage:  "environment to target for configuration migration",
 			EnvVar: "GULL_ENVIRONMENT",
 			Value:  "default",
 		},
@@ -67,6 +73,12 @@ func (uc *UpCommand) ParseOptions(context *cli.Context) {
 
 	uc.SourceDirectory = context.String("source")
 
+	uc.Application = context.String("application")
+	if uc.Application == "" {
+		fmt.Println("application was not found, but is required.")
+		os.Exit(1)
+	}
+
 	uc.Environment = context.String("environment")
 	if uc.Environment == "default" {
 		if uc.Verbose {
@@ -86,9 +98,9 @@ func (uc *UpCommand) Up() {
 	// All migrations will then be walked again, applying any migrations containing the target environment.
 	var target gull.MigrationTarget
 	if uc.DryRun {
-		target = gull.NewMockMigrationTarget(uc.Environment)
+		target = gull.NewMockMigrationTarget(uc.Application, uc.Environment)
 	} else {
-		target = gull.NewEtcdMigrationTarget(uc.EtcdHostUrl, uc.Environment)
+		target = gull.NewEtcdMigrationTarget(uc.EtcdHostUrl, uc.Application, uc.Environment)
 	}
 	up := gull.NewUp(uc.SourceDirectory, target)
 	err := up.Migrate()

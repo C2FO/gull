@@ -21,7 +21,7 @@ type IntegrationMigrateSuite struct {
 
 func TestIntegrationMigrateSuite(t *testing.T) {
 	migrateSuite := &IntegrationMigrateSuite{
-		Target: NewEtcdMigrationTarget(testdata.ValidEtcdHostUrl, "default"),
+		Target: NewEtcdMigrationTarget(testdata.ValidEtcdHostUrl, "gull", "default"),
 	}
 	suite.Run(t, migrateSuite)
 	_ = os.RemoveAll(testdata.ConvertDestination1)
@@ -46,7 +46,8 @@ func (suite *IntegrationMigrateSuite) TestMigrationStateStorageAndRetrieval() {
 	assert.Nil(suite.T(), err)
 
 	up := NewUp(testdata.ConvertDestination1, suite.Target)
-	up.Migrate()
+	err = up.Migrate()
+	assert.Nil(suite.T(), err)
 
 	state, err := suite.Target.GetStatus()
 	assert.Nil(suite.T(), err)
@@ -72,7 +73,8 @@ func (suite *IntegrationMigrateSuite) TestMigrateDown() {
 	assert.Nil(suite.T(), err)
 
 	up := NewUp(testdata.ConvertDestination1, suite.Target)
-	up.Migrate()
+	err = up.Migrate()
+	assert.Nil(suite.T(), err)
 
 	down := NewDown(suite.Target)
 	err = down.Migrate()
