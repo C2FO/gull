@@ -16,6 +16,8 @@ type MigrationTarget interface {
 	SetStatus(state *MigrationState) error
 	DeleteEnvironment() error
 	DeleteApplication() error
+	IsPerformingFullMigration() bool
+	GetMigrationTip() (*Migration, error)
 }
 
 type MockMigrationTarget struct {
@@ -96,4 +98,15 @@ func (mmt *MockMigrationTarget) SetStatus(state *MigrationState) error {
 
 func (mmt *MockMigrationTarget) GetStatus() (*MigrationState, error) {
 	return mmt.MigrationState, nil
+}
+
+func (mmt *MockMigrationTarget) IsPerformingFullMigration() bool {
+	return true
+}
+
+func (mmt *MockMigrationTarget) GetMigrationTip() (*Migration, error) {
+	if mmt.MigrationState == nil {
+		return nil, nil
+	}
+	return mmt.MigrationState.Migrations.Last()
 }

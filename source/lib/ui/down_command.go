@@ -91,7 +91,7 @@ func (dc *DownCommand) Down() {
 	if dc.DryRun {
 		target = gull.NewMockMigrationTarget(dc.Application, dc.Environment)
 	} else {
-		target = gull.NewEtcdMigrationTarget(dc.EtcdHostUrl, dc.Application, dc.Environment)
+		target = gull.NewEtcdMigrationTarget(dc.EtcdHostUrl, dc.Application, dc.Environment, false)
 	}
 	down := gull.NewDown(target)
 	err := down.Migrate()

@@ -21,21 +21,10 @@ type IntegrationMigrateSuite struct {
 
 func TestIntegrationMigrateSuite(t *testing.T) {
 	migrateSuite := &IntegrationMigrateSuite{
-		Target: NewEtcdMigrationTarget(testdata.ValidEtcdHostUrl, "gull", "default"),
+		Target: NewEtcdMigrationTarget(testdata.ValidEtcdHostUrl, "gull", "default", true),
 	}
 	suite.Run(t, migrateSuite)
 	_ = os.RemoveAll(testdata.ConvertDestination1)
-}
-
-func (suite *IntegrationMigrateSuite) TestLoadConfigIntoEtcd() {
-	config, err := NewConfigFromJson(testdata.ValidJsonConfig1)
-	assert.Nil(suite.T(), err)
-
-	migration, err := NewMigrationFromConfig("", config)
-	assert.Nil(suite.T(), err)
-
-	err = migration.Content.Apply(suite.Target)
-	assert.Nil(suite.T(), err)
 }
 
 func (suite *IntegrationMigrateSuite) TestMigrationStateStorageAndRetrieval() {
@@ -52,7 +41,7 @@ func (suite *IntegrationMigrateSuite) TestMigrationStateStorageAndRetrieval() {
 	state, err := suite.Target.GetStatus()
 	assert.Nil(suite.T(), err)
 	assert.NotNil(suite.T(), state.Migrations)
-	assert.Equal(suite.T(), up.Migrations.Count(), state.Migrations.Count())
+	assert.Equal(suite.T(), up.Migrations.Len(), state.Migrations.Len())
 
 	first, err := state.Migrations.First()
 	assert.Nil(suite.T(), err)
@@ -79,7 +68,7 @@ func (suite *IntegrationMigrateSuite) TestMigrateDown() {
 	down := NewDown(suite.Target)
 	err = down.Migrate()
 	assert.Nil(suite.T(), err)
-	assert.Equal(suite.T(), up.Migrations.Count()-1, down.Migrations.Count())
+	assert.Equal(suite.T(), up.Migrations.Len()-1, down.Migrations.Len())
 
 	upFirst, err := up.Migrations.First()
 	assert.Nil(suite.T(), err)

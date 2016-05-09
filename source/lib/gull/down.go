@@ -21,9 +21,6 @@ func (d *Down) Migrate() error {
 	if err != nil {
 		return err
 	}
-	err = d.MigrationTarget.DeleteEnvironment()
-	if err != nil {
-		return err
-	}
+	_ = d.MigrationTarget.DeleteEnvironment()
 	return status.Migrations.Apply(d.MigrationTarget)
 }

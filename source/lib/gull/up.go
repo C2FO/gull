@@ -1,6 +1,7 @@
 package gull
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 )
@@ -25,6 +26,10 @@ func (u *Up) Migrate() error {
 	err := u.Ingest()
 	if err != nil {
 		return err
+	}
+	if u.MigrateTarget.IsPerformingFullMigration() {
+		fmt.Printf("Deleting configuration for [%v]/[%v]\n", u.MigrateTarget.GetApplication(), u.MigrateTarget.GetEnvironment())
+		_ = u.MigrateTarget.DeleteEnvironment()
 	}
 	return u.Migrations.Apply(u.MigrateTarget)
 }

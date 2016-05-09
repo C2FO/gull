@@ -50,17 +50,27 @@ func (m *Migrations) Get(id string) (*Migration, error) {
 	return migration, nil
 }
 
-func (m *Migrations) Count() int {
-	return len(m.Entries)
-}
-
 func (m *Migrations) Apply(target MigrationTarget) error {
 	environments := []string{"default"}
 	if target.GetEnvironment() != "default" && target.GetEnvironment() != "" {
 		environments = append(environments, target.GetEnvironment())
 	}
+	tip, err := target.GetMigrationTip()
+	tipId := ""
+	if err == nil && tip != nil {
+		tipId = tip.Id
+		fmt.Printf("[%v]/[%v] is currently migrated to [%v]\n", target.GetApplication(), target.GetEnvironment(), tip.Name)
+	}
+	last, err := m.Last()
+	if err != nil {
+		return err
+	}
+	if last.Id == tipId {
+		fmt.Printf("There are no new migrations to apply\n")
+		return nil
+	}
 	for _, environment := range environments {
-		err := m.apply(target, environment, target.GetEnvironment())
+		err := m.apply(target, environment, tipId)
 		if err != nil {
 			return err
 		}
@@ -69,42 +79,56 @@ func (m *Migrations) Apply(target MigrationTarget) error {
 	return target.SetStatus(migrationState)
 }
 
-func (m *Migrations) Pop() (*Migration, error) {
-	if m.Count() <= 0 {
-		return nil, fmt.Errorf("No migrations found, unable to remove the last element.")
-	}
-	popped := m.Entries[m.Count()-1]
-	m.Entries = m.Entries[:m.Count()-1]
-	return popped, nil
-}
-
-func (m *Migrations) apply(target MigrationTarget, sourceEnvironment string, destinationEnvironment string) error {
-	source := fmt.Sprintf("/%v/", sourceEnvironment)
-	dest := fmt.Sprintf("/%v/", destinationEnvironment)
+func (m *Migrations) apply(target MigrationTarget, source string, tipId string) error {
+	src := fmt.Sprintf("/%v/", source)
+	dest := fmt.Sprintf("/%v/", target.GetEnvironment())
+	active := target.IsPerformingFullMigration() || tipId == ""
 	for _, entry := range m.Entries {
-		for _, leaf := range entry.Content.Entries {
-			if strings.Contains(leaf.Path, source) {
-				path := strings.Replace(leaf.Path, source, dest, 1)
-				err := target.Set(path, leaf.Value)
-				if err != nil {
-					return err
+		if active {
+			fmt.Printf("Applying migration [%v] for environment [%v]\n", entry.Name, source)
+			for _, leaf := range entry.Content.Entries {
+				if strings.Contains(leaf.Path, src) {
+					path := strings.Replace(leaf.Path, src, dest, 1)
+					err := target.Set(path, leaf.Value)
+					if err != nil {
+						return err
+					}
 				}
+			}
+		} else {
+			if entry.Id == tipId {
+				active = true
 			}
 		}
 	}
+	if !active {
+		return fmt.Errorf("The existing migration tip of [%v] was not found in the local migrations. Unable to migrate.\n", tipId)
+	}
 	return nil
+}
+
+func (m *Migrations) Pop() (*Migration, error) {
+	if m.Len() <= 0 {
+		return nil, fmt.Errorf("No migrations found, unable to remove the last element.")
+	}
+	popped := m.Entries[m.Len()-1]
+	m.Entries = m.Entries[:m.Len()-1]
+	return popped, nil
 }
 
 // Implement the Sort interface
 func (m *Migrations) Len() int {
 	return len(m.Entries)
 }
+
 func (m *Migrations) Swap(i, j int) {
 	m.Entries[i], m.Entries[j] = m.Entries[j], m.Entries[i]
 }
+
 func (m *Migrations) Less(i, j int) bool {
 	return m.Entries[i].Id < m.Entries[j].Id
 }
+
 func (m *Migrations) Sort() {
 	sort.Sort(m)
 	previousId := ""

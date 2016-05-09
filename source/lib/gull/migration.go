@@ -16,6 +16,7 @@ type Migration struct {
 	Id         string
 	NextId     string
 	PreviousId string
+	Name       string
 }
 
 func NewMigrationFromGull(name string, source string) (*Migration, error) {
@@ -88,7 +89,8 @@ func newMigration(name string) *Migration {
 		id = strings.Split(name, "-")[0]
 	}
 	return &Migration{
-		Id: id,
+		Id:   id,
+		Name: name,
 	}
 }
 

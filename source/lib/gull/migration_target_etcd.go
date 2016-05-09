@@ -10,9 +10,10 @@ import (
 )
 
 type EtcdMigrationTarget struct {
-	EtcdHostUrl string
-	Application string
-	Environment string
+	EtcdHostUrl   string
+	Application   string
+	Environment   string
+	FullMigration bool
 }
 
 type etcdGetResponse struct {
@@ -24,11 +25,12 @@ type etcdPair struct {
 	Value string
 }
 
-func NewEtcdMigrationTarget(hostUrl string, application string, environment string) *EtcdMigrationTarget {
+func NewEtcdMigrationTarget(hostUrl string, application string, environment string, performFullMigration bool) *EtcdMigrationTarget {
 	return &EtcdMigrationTarget{
-		EtcdHostUrl: hostUrl,
-		Application: application,
-		Environment: environment,
+		EtcdHostUrl:   hostUrl,
+		Application:   application,
+		Environment:   environment,
+		FullMigration: performFullMigration,
 	}
 }
 
@@ -155,4 +157,16 @@ func (emt *EtcdMigrationTarget) GetStatus() (*MigrationState, error) {
 
 func (emt *EtcdMigrationTarget) getStatusPath() string {
 	return fmt.Sprintf("/%v/_gull/state", emt.GetEnvironment())
+}
+
+func (emt *EtcdMigrationTarget) IsPerformingFullMigration() bool {
+	return emt.FullMigration
+}
+
+func (emt *EtcdMigrationTarget) GetMigrationTip() (*Migration, error) {
+	migrationState, err := emt.GetStatus()
+	if err != nil {
+		return nil, err
+	}
+	return migrationState.Migrations.Last()
 }
