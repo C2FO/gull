@@ -1,7 +1,7 @@
 package: github.com/c2fo/gull
 import:
 - package: github.com/codegangsta/cli
-  version: a65b733b303f0055f8d324d805f393cd3e7a7904
+  version: de28b8426b87c85d1263be52350487e02ba1e0ed
 - package: github.com/stretchr/testify
   version: bcd9e3389dd03b0b668d11f4d462a6af6c2dfd60
 - package: github.com/franela/goreq

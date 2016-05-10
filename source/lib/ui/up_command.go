@@ -66,9 +66,10 @@ func (uc *UpCommand) GetCliCommand() cli.Command {
 		Name:  "up",
 		Usage: "Migrate to the latest configuration",
 		Flags: uc.GetFlags(),
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			uc.ParseOptions(c)
 			uc.Up()
+			return nil
 		},
 	}
 }

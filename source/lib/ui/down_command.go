@@ -53,9 +53,10 @@ func (dc *DownCommand) GetCliCommand() cli.Command {
 		Name:  "down",
 		Usage: "Migrate to a previous configuration",
 		Flags: dc.GetFlags(),
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			dc.ParseOptions(c)
 			dc.Down()
+			return nil
 		},
 	}
 }

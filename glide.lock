@@ -1,10 +1,10 @@
-hash: 07035b8fd9090c68300bb9fd9f7b5bc2775051294a33755f972a18a14bf56f27
-updated: 2016-05-06T12:24:29.203813841-05:00
+hash: 794d2c9d99611d0c1bfcd1ee3ed9bc1fc392da9849a5b7e9a6e4da9d9548770a
+updated: 2016-05-10T12:35:36.306256898-05:00
 imports:
 - name: github.com/brockwood/gostrufig
   version: b30cb30387a9cba3c970644c880903739e94f5f2
 - name: github.com/codegangsta/cli
-  version: a65b733b303f0055f8d324d805f393cd3e7a7904
+  version: de28b8426b87c85d1263be52350487e02ba1e0ed
 - name: github.com/coreos/go-etcd
   version: 003851be7bb0694fe3cc457a49529a19388ee7cf
 - name: github.com/franela/goreq

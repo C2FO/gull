@@ -40,9 +40,10 @@ func (sc *StatusCommand) GetCliCommand() cli.Command {
 		Name:  "status",
 		Usage: "Display what gull knows for a single environment",
 		Flags: sc.GetFlags(),
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			sc.ParseOptions(c)
 			sc.Status()
+			return nil
 		},
 	}
 }
