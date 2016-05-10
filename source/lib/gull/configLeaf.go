@@ -17,19 +17,6 @@ func NewConfigLeaves() (*ConfigLeaves, error) {
 	}, nil
 }
 
-func (c *ConfigLeaves) Apply(target MigrationTarget) error {
-	if c == nil || c.Entries == nil || len(c.Entries) == 0 {
-		return fmt.Errorf("No leaves were found within this migration. Unable to perform an Apply().")
-	}
-	for _, leaf := range c.Entries {
-		err := target.Set(leaf.Path, leaf.Value)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
 func (c *ConfigLeaves) GetValue(path string) (string, error) {
 	for _, leaf := range c.Entries {
 		if leaf.Path == path {

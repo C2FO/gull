@@ -16,6 +16,7 @@ type UpCommand struct {
 	SourceDirectory string
 	Verbose         bool
 	DryRun          bool
+	Full            bool
 }
 
 func (uc *UpCommand) GetFlags() []cli.Flag {
@@ -51,6 +52,11 @@ func (uc *UpCommand) GetFlags() []cli.Flag {
 			Name:   "dryrun, d",
 			Usage:  "show the expected configuration to be deployed",
 			EnvVar: "GULL_DRY_RUN",
+		},
+		cli.BoolFlag{
+			Name:   "full",
+			Usage:  "wipe an environment's configuration and reapply all migrations",
+			EnvVar: "GULL_FULL",
 		},
 	}
 }
@@ -91,6 +97,8 @@ func (uc *UpCommand) ParseOptions(context *cli.Context) {
 		fmt.Println("No etcdhost was provided, but it is required")
 		os.Exit(1)
 	}
+
+	uc.Full = context.Bool("full")
 }
 
 func (uc *UpCommand) Up() {
@@ -100,7 +108,7 @@ func (uc *UpCommand) Up() {
 	if uc.DryRun {
 		target = gull.NewMockMigrationTarget(uc.Application, uc.Environment)
 	} else {
-		target = gull.NewEtcdMigrationTarget(uc.EtcdHostUrl, uc.Application, uc.Environment)
+		target = gull.NewEtcdMigrationTarget(uc.EtcdHostUrl, uc.Application, uc.Environment, uc.Full)
 	}
 	up := gull.NewUp(uc.SourceDirectory, target)
 	err := up.Migrate()

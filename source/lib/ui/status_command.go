@@ -68,7 +68,7 @@ func (sc *StatusCommand) ParseOptions(context *cli.Context) {
 
 func (sc *StatusCommand) Status() {
 	fmt.Printf("Checking migration status of environment [%s] on etcd host [%s]\n", sc.Environment, sc.EtcdHostUrl)
-	target := gull.NewEtcdMigrationTarget(sc.EtcdHostUrl, sc.Application, sc.Environment)
+	target := gull.NewEtcdMigrationTarget(sc.EtcdHostUrl, sc.Application, sc.Environment, false)
 	status := gull.NewStatus(target)
 	err := status.Check()
 	if err != nil {
