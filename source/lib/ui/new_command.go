@@ -35,9 +35,10 @@ func (nc *NewCommand) GetCliCommand() cli.Command {
 		Name:  "new",
 		Usage: "Create an empty migration file",
 		Flags: nc.GetFlags(),
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			nc.ParseOptions(c)
 			nc.New()
+			return nil
 		},
 	}
 }

@@ -41,9 +41,10 @@ func (cc *ConvertCommand) GetCliCommand() cli.Command {
 		Name:  "convert",
 		Usage: "Convert application configuration into gull migrations",
 		Flags: cc.GetFlags(),
-		Action: func(c *cli.Context) {
+		Action: func(c *cli.Context) error {
 			cc.ParseOptions(c)
 			cc.Convert()
+			return nil
 		},
 	}
 }
