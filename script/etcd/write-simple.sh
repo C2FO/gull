@@ -1,6 +1,6 @@
 #! /bin/bash
 
-ETCDHOST="http://localhost:4002/v2/keys"
+ETCDHOST="http://localhost:2379/v2/keys"
 
 curl -L -X PUT "$ETCDHOST/what" -d value="You"
 curl -L -X PUT "$ETCDHOST/are" -d value="had"

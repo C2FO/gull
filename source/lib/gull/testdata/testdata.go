@@ -8,7 +8,7 @@ var ConvertDestination2 = "/tmp/gostrufig-json/"
 
 var ConvertSource2 = "testdata/gostrufig-json/"
 
-var ValidEtcdHostUrl = "http://localhost:4002/v2/keys"
+var ValidEtcdHostUrl = "http://localhost:2379/v2/keys"
 
 var ValidJsonConfig1 = `
     {
