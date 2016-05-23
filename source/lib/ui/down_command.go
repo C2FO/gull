@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/c2fo/gull/source/lib/common"
 	"github.com/c2fo/gull/source/lib/gull"
 	"github.com/codegangsta/cli"
 )
@@ -34,6 +35,7 @@ func (dc *DownCommand) GetFlags() []cli.Flag {
 			Name:   "etcdhost, s",
 			Usage:  "url to the system running etcd in the format 'http://localhost:2379/v2/keys'",
 			EnvVar: "GULL_ETCD_HOST",
+			Value:  common.DefaultEtcdServerUrl,
 		},
 		cli.BoolFlag{
 			Name:   "verbose, v",
@@ -79,8 +81,8 @@ func (dc *DownCommand) ParseOptions(context *cli.Context) {
 	}
 
 	dc.EtcdHostUrl = context.String("etcdhost")
-	if dc.EtcdHostUrl == "" {
-		fmt.Println("No etcdhost was provided, but it is required")
+	if dc.EtcdHostUrl == common.DefaultEtcdServerUrl {
+		fmt.Printf("No etcdhost was provided, using [%v]\n", common.DefaultEtcdServerUrl)
 		os.Exit(1)
 	}
 }
