@@ -18,6 +18,7 @@ type MigrationTarget interface {
 	DeleteApplication() error
 	IsPerformingFullMigration() bool
 	GetMigrationTip() (*Migration, error)
+	GetLogger() ILogger
 }
 
 type MockMigrationTarget struct {
@@ -25,13 +26,15 @@ type MockMigrationTarget struct {
 	Application    string
 	Environment    string
 	MigrationState *MigrationState
+	logger         ILogger
 }
 
-func NewMockMigrationTarget(application string, environment string) *MockMigrationTarget {
+func NewMockMigrationTarget(application string, environment string, logger ILogger) *MockMigrationTarget {
 	return &MockMigrationTarget{
 		Storage:     map[string]string{},
 		Environment: environment,
 		Application: application,
+		logger:      logger,
 	}
 }
 
@@ -87,7 +90,7 @@ func (mmt *MockMigrationTarget) GetAll() map[string]string {
 
 func (mmt *MockMigrationTarget) Debug() {
 	for key, value := range mmt.Storage {
-		fmt.Printf("[%v]->[%v]\n", key, value)
+		mmt.GetLogger().Debug("[%v]->[%v]", key, value)
 	}
 }
 
@@ -109,4 +112,8 @@ func (mmt *MockMigrationTarget) GetMigrationTip() (*Migration, error) {
 		return nil, nil
 	}
 	return mmt.MigrationState.Migrations.Last()
+}
+
+func (mmt *MockMigrationTarget) GetLogger() ILogger {
+	return mmt.logger
 }

@@ -15,8 +15,9 @@ type MigrationsTestSuite struct {
 }
 
 func TestMigrationsSuite(t *testing.T) {
-	mtSuite := new(MigrationsTestSuite)
-	mtSuite.Target = NewMockMigrationTarget("gull", "default")
+	mtSuite := &MigrationsTestSuite{
+		Target: NewMockMigrationTarget("gull", "default", NewNullLogger()),
+	}
 	suite.Run(t, mtSuite)
 }
 

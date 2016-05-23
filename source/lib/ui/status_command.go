@@ -1,7 +1,6 @@
 package ui
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/c2fo/gull/source/lib/gull"
@@ -12,6 +11,7 @@ type StatusCommand struct {
 	Application string
 	Environment string
 	EtcdHostUrl string
+	Logger      gull.ILogger
 }
 
 func (sc *StatusCommand) GetFlags() []cli.Flag {
@@ -49,31 +49,33 @@ func (sc *StatusCommand) GetCliCommand() cli.Command {
 }
 
 func (sc *StatusCommand) ParseOptions(context *cli.Context) {
+	sc.Logger = gull.NewVerboseLogger()
 	sc.Application = context.String("application")
 	if sc.Application == "" {
-		fmt.Println("application was not found, but is required.")
+		sc.Logger.Info("application was not found, but is required.")
 		os.Exit(1)
 	}
 
 	sc.Environment = context.String("environment")
 	if sc.Environment == "default" {
-		fmt.Printf("No target environment was provided, using 'default'\n")
+		sc.Logger.Info("No target environment was provided, using 'default'")
 	}
 
 	sc.EtcdHostUrl = context.String("etcdhost")
 	if sc.EtcdHostUrl == "" {
-		fmt.Println("No etcdhost was not provided, but it is required")
+		sc.Logger.Info("No etcdhost was not provided, but it is required")
 		os.Exit(1)
 	}
 }
 
 func (sc *StatusCommand) Status() {
-	fmt.Printf("Checking migration status of environment [%s] on etcd host [%s]\n", sc.Environment, sc.EtcdHostUrl)
-	target := gull.NewEtcdMigrationTarget(sc.EtcdHostUrl, sc.Application, sc.Environment, false)
+	logger := gull.NewVerboseLogger()
+	logger.Info("Checking migration status of environment [%s] on etcd host [%s]", sc.Environment, sc.EtcdHostUrl)
+	target := gull.NewEtcdMigrationTarget(sc.EtcdHostUrl, sc.Application, sc.Environment, false, logger)
 	status := gull.NewStatus(target)
 	err := status.Check()
 	if err != nil {
-		fmt.Printf("An error occurred while checking status: [%+v]\n", err)
+		sc.Logger.Info("An error occurred while checking status: [%+v]\n", err)
 		os.Exit(1)
 	}
 }

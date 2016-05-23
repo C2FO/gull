@@ -14,6 +14,7 @@ type EtcdMigrationTarget struct {
 	Application   string
 	Environment   string
 	FullMigration bool
+	logger        ILogger
 }
 
 type etcdGetResponse struct {
@@ -25,12 +26,13 @@ type etcdPair struct {
 	Value string
 }
 
-func NewEtcdMigrationTarget(hostUrl string, application string, environment string, performFullMigration bool) *EtcdMigrationTarget {
+func NewEtcdMigrationTarget(hostUrl string, application string, environment string, performFullMigration bool, logger ILogger) *EtcdMigrationTarget {
 	return &EtcdMigrationTarget{
 		EtcdHostUrl:   hostUrl,
 		Application:   application,
 		Environment:   environment,
 		FullMigration: performFullMigration,
+		logger:        logger,
 	}
 }
 
@@ -169,4 +171,8 @@ func (emt *EtcdMigrationTarget) GetMigrationTip() (*Migration, error) {
 		return nil, err
 	}
 	return migrationState.Migrations.Last()
+}
+
+func (emt *EtcdMigrationTarget) GetLogger() ILogger {
+	return emt.logger
 }
