@@ -1,7 +1,9 @@
 package ui
 
 import (
+	"fmt"
 	"os"
+	"strings"
 
 	"github.com/codegangsta/cli"
 )
@@ -24,9 +26,12 @@ func Launch() {
 		new(StatusCommand).GetCliCommand(),
 		new(UpCommand).GetCliCommand(),
 	}
-
 	err := app.Run(os.Args)
 	if err != nil {
-		panic(err)
+		if strings.Contains(err.Error(), "flag provided but not defined") {
+			fmt.Printf(err.Error())
+		} else {
+			panic(err)
+		}
 	}
 }
