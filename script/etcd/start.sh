@@ -2,6 +2,6 @@
 
 docker run \
   -d \
-  -p 4002:4001 \
-  elcolio/etcd:latest \
-  -advertise-client-urls http://localhost:4002
+  -p 2379:2379 \
+  elcolio/etcd \
+  -advertise-client-urls http://localhost:2379

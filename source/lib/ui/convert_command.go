@@ -18,12 +18,12 @@ type ConvertCommand struct {
 func (cc *ConvertCommand) GetFlags() []cli.Flag {
 	return []cli.Flag{
 		cli.StringFlag{
-			Name:   "source, src, s",
+			Name:   "source, i",
 			Usage:  "configuration file or directory to convert",
 			EnvVar: "GULL_SOURCE",
 		},
 		cli.StringFlag{
-			Name:   "destination, dest, d",
+			Name:   "destination, o",
 			Value:  common.DefaultGullDirectory,
 			Usage:  "directory that will contain the converted configuration migration(s)",
 			EnvVar: "GULL_DESTINATION",
