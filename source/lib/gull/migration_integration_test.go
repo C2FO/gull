@@ -21,7 +21,7 @@ type IntegrationMigrateSuite struct {
 
 func TestIntegrationMigrateSuite(t *testing.T) {
 	migrateSuite := &IntegrationMigrateSuite{
-		Target: NewEtcdMigrationTarget(testdata.ValidEtcdHostUrl, "gull", "default", true),
+		Target: NewEtcdMigrationTarget(testdata.ValidEtcdHostUrl, "gull", "default", true, NewNullLogger()),
 	}
 	suite.Run(t, migrateSuite)
 	_ = os.RemoveAll(testdata.ConvertDestination1)

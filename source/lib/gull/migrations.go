@@ -9,6 +9,7 @@ import (
 type Migrations struct {
 	Entries []*Migration
 	Lookup  map[string]*Migration
+	logger  ILogger
 }
 
 func NewMigrations() *Migrations {
@@ -59,14 +60,14 @@ func (m *Migrations) Apply(target MigrationTarget) error {
 	tipId := ""
 	if err == nil && tip != nil {
 		tipId = tip.Id
-		fmt.Printf("[%v]/[%v] is currently migrated to [%v]\n", target.GetApplication(), target.GetEnvironment(), tip.Name)
+		target.GetLogger().Info("[%v]/[%v] is currently migrated to [%v]", target.GetApplication(), target.GetEnvironment(), tip.Name)
 	}
 	last, err := m.Last()
 	if err != nil {
 		return err
 	}
 	if last.Id == tipId {
-		fmt.Printf("There are no new migrations to apply\n")
+		target.GetLogger().Info("There are no new migrations to apply\n")
 		return nil
 	}
 	for _, environment := range environments {
@@ -85,7 +86,7 @@ func (m *Migrations) apply(target MigrationTarget, source string, tipId string) 
 	active := target.IsPerformingFullMigration() || tipId == ""
 	for _, entry := range m.Entries {
 		if active {
-			fmt.Printf("Applying migration [%v] for environment [%v]\n", entry.Name, source)
+			target.GetLogger().Debug("Applying migration [%v] for environment [%v]", entry.Name, source)
 			for _, leaf := range entry.Content.Entries {
 				if strings.Contains(leaf.Path, src) {
 					path := strings.Replace(leaf.Path, src, dest, 1)

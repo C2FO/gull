@@ -88,11 +88,12 @@ func (dc *DownCommand) ParseOptions(context *cli.Context) {
 func (dc *DownCommand) Down() {
 	// A 'Down' will remove all the current configuration for an environment.
 	// Then all migrations that were stored in etcd for that environment are applied, ignoring the latest migration.
+	logger := gull.NewLogger(dc.Verbose)
 	var target gull.MigrationTarget
 	if dc.DryRun {
-		target = gull.NewMockMigrationTarget(dc.Application, dc.Environment)
+		target = gull.NewMockMigrationTarget(dc.Application, dc.Environment, logger)
 	} else {
-		target = gull.NewEtcdMigrationTarget(dc.EtcdHostUrl, dc.Application, dc.Environment, false)
+		target = gull.NewEtcdMigrationTarget(dc.EtcdHostUrl, dc.Application, dc.Environment, false, logger)
 	}
 	down := gull.NewDown(target)
 	err := down.Migrate()

@@ -105,11 +105,12 @@ func (uc *UpCommand) ParseOptions(context *cli.Context) {
 func (uc *UpCommand) Up() {
 	// An 'Up' will walk through all migrations and apply 'default' to the target environment.
 	// All migrations will then be walked again, applying any migrations containing the target environment.
+	logger := gull.NewLogger(uc.Verbose)
 	var target gull.MigrationTarget
 	if uc.DryRun {
-		target = gull.NewMockMigrationTarget(uc.Application, uc.Environment)
+		target = gull.NewMockMigrationTarget(uc.Application, uc.Environment, logger)
 	} else {
-		target = gull.NewEtcdMigrationTarget(uc.EtcdHostUrl, uc.Application, uc.Environment, uc.Full)
+		target = gull.NewEtcdMigrationTarget(uc.EtcdHostUrl, uc.Application, uc.Environment, uc.Full, logger)
 	}
 	up := gull.NewUp(uc.SourceDirectory, target)
 	err := up.Migrate()
