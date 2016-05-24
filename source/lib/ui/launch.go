@@ -17,7 +17,7 @@ type GullCommand interface {
 func Launch() {
 	app := cli.NewApp()
 	app.Name = "gull"
-	app.Version = "0.9.0"
+	app.Version = "0.9.1"
 	app.Usage = "etcd configuration migration management system"
 	app.Commands = []cli.Command{
 		new(ConvertCommand).GetCliCommand(),
@@ -29,7 +29,7 @@ func Launch() {
 	err := app.Run(os.Args)
 	if err != nil {
 		if strings.Contains(err.Error(), "flag provided but not defined") {
-			fmt.Printf(err.Error())
+			fmt.Println(err.Error())
 		} else {
 			panic(err)
 		}

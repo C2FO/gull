@@ -9,7 +9,6 @@ import (
 type Migrations struct {
 	Entries []*Migration
 	Lookup  map[string]*Migration
-	logger  ILogger
 }
 
 func NewMigrations() *Migrations {
