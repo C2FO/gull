@@ -55,7 +55,7 @@ func (uc *UpCommand) GetFlags() []cli.Flag {
 			EnvVar: "GULL_DRY_RUN",
 		},
 		cli.BoolFlag{
-			Name:   "full",
+			Name:   "full, f",
 			Usage:  "wipe an environment's configuration and reapply all migrations",
 			EnvVar: "GULL_FULL",
 		},
@@ -78,6 +78,7 @@ func (uc *UpCommand) GetCliCommand() cli.Command {
 func (uc *UpCommand) ParseOptions(context *cli.Context) {
 	uc.Verbose = context.Bool("verbose")
 	uc.DryRun = context.Bool("dryrun")
+	uc.Full = context.Bool("full")
 
 	uc.SourceDirectory = context.String("source")
 
@@ -99,8 +100,6 @@ func (uc *UpCommand) ParseOptions(context *cli.Context) {
 		fmt.Println("No etcdhost was provided, but it is required")
 		os.Exit(1)
 	}
-
-	uc.Full = context.Bool("full")
 }
 
 func (uc *UpCommand) Up() {

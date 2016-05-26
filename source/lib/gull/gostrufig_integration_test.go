@@ -46,5 +46,5 @@ func (suite *IntegrationGostrufigSuite) TestGostrufigRetrieve() {
 	etcdUrl := strings.Replace(testdata.ValidEtcdHostUrl, "/v2/keys", "", -1)
 	gostrufig := gostrufig.GetGostrufig("gull", etcdUrl, etcdDriver)
 	gostrufig.RetrieveConfig(&config)
-	assert.Equal(suite.T(), "carroll", config.Lewis)
+	assert.Equal(suite.T(), "\"carroll\"\n", config.Lewis)
 }
