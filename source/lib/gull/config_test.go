@@ -22,7 +22,7 @@ func (suite *ConfigTestSuite) TestParseJSONString() {
 	assert.Nil(suite.T(), err)
 	leaf, err := result.Leaves.GetValue("/default/enableLogging")
 	assert.Nil(suite.T(), err)
-	assert.Equal(suite.T(), "false", leaf)
+	assert.Equal(suite.T(), "false\n", leaf)
 }
 
 func (suite *ConfigTestSuite) TestParseJSONArray() {
@@ -32,7 +32,7 @@ func (suite *ConfigTestSuite) TestParseJSONArray() {
 	leaf, err := result.Leaves.GetValue("/default/services")
 
 	assert.Nil(suite.T(), err)
-	assert.Equal(suite.T(), "[well hi there]", leaf)
+	assert.Equal(suite.T(), "[\"well\",\"hi\",\"there\"]\n", leaf)
 }
 
 func (suite *ConfigTestSuite) TestInvalidPath() {

@@ -42,6 +42,7 @@ func (emt *EtcdMigrationTarget) Set(path string, value string) error {
 	}
 	storageUrl := emt.EtcdHostUrl + url.QueryEscape(emt.getAppPath(path))
 	value = fmt.Sprintf("value=%v", url.QueryEscape(value))
+
 	response, err := goreq.Request{
 		Method:      "PUT",
 		Uri:         storageUrl,

@@ -17,7 +17,7 @@ type GullCommand interface {
 func Launch() {
 	app := cli.NewApp()
 	app.Name = "gull"
-	app.Version = "0.9.1"
+	app.Version = "0.9.2"
 	app.Usage = "etcd configuration migration management system"
 	app.Commands = []cli.Command{
 		new(ConvertCommand).GetCliCommand(),
@@ -25,6 +25,7 @@ func Launch() {
 		new(NewCommand).GetCliCommand(),
 		new(StatusCommand).GetCliCommand(),
 		new(UpCommand).GetCliCommand(),
+		new(DestroyCommand).GetCliCommand(),
 	}
 	err := app.Run(os.Args)
 	if err != nil {
