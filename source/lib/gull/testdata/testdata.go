@@ -4,10 +4,6 @@ var ConvertDestination1 = "/tmp/test-env-root-json/"
 
 var ConvertSource1 = "testdata/test-env-root-json"
 
-var ConvertDestination2 = "/tmp/gostrufig-json/"
-
-var ConvertSource2 = "testdata/gostrufig-json/"
-
 var ValidEtcdHostUrl = "http://localhost:2379/v2/keys"
 
 var ValidJsonConfig1 = `

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"path"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -44,16 +45,26 @@ func NewMigrationFromConfig(name string, config *Config) (*Migration, error) {
 	return migration, nil
 }
 
-func NewMigrationFromConfigFile(filePath string) (*Migration, error) {
+func NewMigrationFromConfigFile(filePath string, fileNameIsEnvironment bool, jsonEncode bool) (*Migration, error) {
 	bytes, err := ioutil.ReadFile(filePath)
 	if err != nil {
 		return nil, err
 	}
-	config, err := NewConfigFromJson(string(bytes))
+	config, err := NewConfigFromJson(string(bytes), jsonEncode)
 	if err != nil {
 		return nil, err
 	}
-	return NewMigrationFromConfig("", config)
+	migration, err := NewMigrationFromConfig("", config)
+	if err != nil {
+		return nil, err
+	}
+	if fileNameIsEnvironment {
+		environment := strings.Split(filepath.Base(filePath), ".")[0]
+		for ii, _ := range migration.Content.Entries {
+			migration.Content.Entries[ii].Path = fmt.Sprintf("/%v%v", environment, migration.Content.Entries[ii].Path)
+		}
+	}
+	return migration, nil
 }
 
 func GetMigrationNameFromConfigName(filePath string) string {

@@ -89,6 +89,9 @@ func (m *Migrations) apply(target MigrationTarget, source string, tipId string) 
 			for _, leaf := range entry.Content.Entries {
 				if strings.Contains(leaf.Path, src) {
 					path := strings.Replace(leaf.Path, src, dest, 1)
+					if strings.Count(leaf.Value, "\n") == 1 && len(leaf.Value) > 1 {
+						leaf.Value = strings.Replace(leaf.Value, "\n", "", 1)
+					}
 					err := target.Set(path, leaf.Value)
 					if err != nil {
 						return err

@@ -9,16 +9,20 @@ import (
 )
 
 type Convert struct {
-	DestinationDir string
+	DestinationDir        string
+	FileNameIsEnvironment bool
+	JsonEncode            bool
 }
 
-func NewConvert(destinationDir string) (*Convert, error) {
+func NewConvert(destinationDir string, fileNameIsEnvironment bool, jsonEncode bool) (*Convert, error) {
 	err := os.MkdirAll(destinationDir, 0755)
 	if err != nil {
 		return nil, err
 	}
 	return &Convert{
-		DestinationDir: destinationDir,
+		DestinationDir:        destinationDir,
+		FileNameIsEnvironment: fileNameIsEnvironment,
+		JsonEncode:            jsonEncode,
 	}, nil
 }
 
@@ -27,11 +31,10 @@ func (c *Convert) ConvertDirectory(dirPath string) error {
 }
 
 func (c *Convert) ConvertFile(filePath string) error {
-	//TODO Handle converting a config file that doesn't have multiple environments in each config file.
 	if strings.Contains(filePath, common.DefaultGullDirectory) {
 		return nil
 	}
-	migration, err := NewMigrationFromConfigFile(filePath)
+	migration, err := NewMigrationFromConfigFile(filePath, c.FileNameIsEnvironment, c.JsonEncode)
 	if err != nil {
 		return err
 	}

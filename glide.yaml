@@ -8,9 +8,3 @@ import:
   version: 3ddeded65be21dacb5a2e2d0b95af9ff6862a2b5
 - package: github.com/go-yaml/yaml
   version: a83829b6f1293c91addabc89d0571c246397bbf4
-- package: github.com/brockwood/gostrufig
-  version: b30cb30387a9cba3c970644c880903739e94f5f2
-- package: github.com/coreos/go-etcd
-  version: 003851be7bb0694fe3cc457a49529a19388ee7cf
-- package: github.com/ugorji/go
-  version: a396ed22fc049df733440d90efe17475e3929ccb
