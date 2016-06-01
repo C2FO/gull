@@ -10,9 +10,11 @@ import (
 )
 
 type ConvertCommand struct {
-	Source      string
-	Destination string
-	Verbose     bool
+	Source                string
+	Destination           string
+	Verbose               bool
+	FileNameIsEnvironment bool
+	JsonEncode            bool
 }
 
 func (cc *ConvertCommand) GetFlags() []cli.Flag {
@@ -33,6 +35,16 @@ func (cc *ConvertCommand) GetFlags() []cli.Flag {
 			Usage:  "display extra logging when running the command",
 			EnvVar: "GULL_VERBOSE",
 		},
+		cli.BoolFlag{
+			Name:   "filenameisenvironment, f",
+			Usage:  "when config files don't contain an environment at the top level, use the file name as the environment",
+			EnvVar: "GULL_FILE_NAME_IS_ENVIRONMENT",
+		},
+		cli.BoolFlag{
+			Name:   "jsonencode, j",
+			Usage:  "if enabled, store converted config values as JSON encoded strings instead of golang formatted string values",
+			EnvVar: "GULL_JSON_ENCODE",
+		},
 	}
 }
 
@@ -51,6 +63,8 @@ func (cc *ConvertCommand) GetCliCommand() cli.Command {
 
 func (cc *ConvertCommand) ParseOptions(context *cli.Context) {
 	cc.Verbose = context.Bool("verbose")
+	cc.FileNameIsEnvironment = context.Bool("filenameisenvironment")
+	cc.JsonEncode = context.Bool("jsonencode")
 
 	cc.Source = context.String("source")
 	if cc.Source == "" {
@@ -67,7 +81,7 @@ func (cc *ConvertCommand) ParseOptions(context *cli.Context) {
 }
 
 func (cc *ConvertCommand) Convert() {
-	convert, err := gull.NewConvert(cc.Destination)
+	convert, err := gull.NewConvert(cc.Destination, cc.FileNameIsEnvironment, cc.JsonEncode)
 	if err != nil {
 		if cc.Verbose {
 			fmt.Printf("An error occurred while instantiating a converter: [%+v]\n", err)

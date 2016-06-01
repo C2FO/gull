@@ -17,18 +17,19 @@ type GullCommand interface {
 func Launch() {
 	app := cli.NewApp()
 	app.Name = "gull"
-	app.Version = "0.9.2"
+	app.Version = "0.10.0"
 	app.Usage = "etcd configuration migration management system"
 	app.Commands = []cli.Command{
 		new(ConvertCommand).GetCliCommand(),
+		new(DestroyCommand).GetCliCommand(),
 		new(DownCommand).GetCliCommand(),
 		new(NewCommand).GetCliCommand(),
 		new(StatusCommand).GetCliCommand(),
 		new(UpCommand).GetCliCommand(),
-		new(DestroyCommand).GetCliCommand(),
 	}
 	err := app.Run(os.Args)
 	if err != nil {
+		// If an invalid argument is passed, don't panic and muddy up the screen with a stacktrace
 		if strings.Contains(err.Error(), "flag provided but not defined") {
 			fmt.Println(err.Error())
 		} else {

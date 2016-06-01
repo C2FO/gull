@@ -19,7 +19,7 @@ func TestConvertSuite(t *testing.T) {
 }
 
 func (suite *ConvertTestSuite) TestConvertComplexJsonConfig() {
-	config, err := NewConfigFromJson(testdata.ValidJsonConfig2)
+	config, err := NewConfigFromJson(testdata.ValidJsonConfig2, false)
 	assert.Nil(suite.T(), err)
 
 	migration, err := NewMigrationFromConfig("", config)
