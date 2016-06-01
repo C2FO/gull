@@ -13,10 +13,10 @@ SOURCE="github.com/c2fo/gull/source/bin/gull"
 export GOARCH=amd64
 
 export GOOS=darwin
-go build -o $WORK/mac/gull -v $SOURCE
+go build -o $WORK/gull-mac64 -v $SOURCE
 
 export GOOS=windows
-go build -o $WORK/win/gull.exe -v $SOURCE
+go build -o $WORK/gull-win64.exe -v $SOURCE
 
 export GOOS=linux
-go build -o $WORK/lin/gull -v $SOURCE
+go build -o $WORK/gull-lin64 -v $SOURCE
