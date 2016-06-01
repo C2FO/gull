@@ -1,21 +1,22 @@
 #! /bin/bash
 
-set -e
 
-WORK=/tmp/gull-release
+set -x
+
+WORK=./gull-release
+rm -rf $WORK
+set -e
 mkdir -p $WORK
 
-SORUCE=github.com/c2fo/gull/source/bin/gull
+SOURCE="github.com/c2fo/gull/source/bin/gull"
 
-GOOS=darwin
-GOARCH=amd64
+export GOARCH=amd64
 
-go build -v $SOURCE -o $WORK/mac/gull
+export GOOS=darwin
+go build -o $WORK/mac/gull -v $SOURCE
 
-GOOS=windows
+export GOOS=windows
+go build -o $WORK/win/gull.exe -v $SOURCE
 
-go build -v $SOURCE -o $WORK/win/gull.exe
-
-GOOS=linux
-
-go build -v $SOURCE -o $WORK/lin/gull
+export GOOS=linux
+go build -o $WORK/lin/gull -v $SOURCE
