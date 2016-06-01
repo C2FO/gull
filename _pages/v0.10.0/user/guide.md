@@ -55,7 +55,7 @@ Note that `-f` and -`j` are both optional flags that can be used together or ign
 
 Once migration files are ready, gull can populate etcd with their state. Gull does this by building up a configuration dataset representing a specific environment. Let's look at an example using `_gull/1464809219-wallet.yaml` from above, and the following command.
 
-`gull up --application infall --environment production --etcdhosturl "http://localhost:2379/v2/keys"`
+`gull up --application infall --environment production --etcdhost "http://localhost:2379/v2/keys"`
 
 This command loads etcd with configuration for our app "InFall" that will be read by the `production` environment. Here's what that data looks like if you read it from etcd.
 
@@ -65,4 +65,14 @@ preWarHoney: 21
 stimpoks: 7
 ```
 
-If you compare that output to the migration above, you will notice that `battleCops` is set to the value found under the `/production/` path instead of the "76" found under `/default/`. You will also notice that we didn't need to define the other two values for production. This is were gull shines. Instead of repeating configurations for separate environments, or building complicated override logic into your configuration management client, you can use etcd as a single source of truth. Gull will load all `/default/` values into any environment, and then override the defaults with any values specific to that environment.
+If you compare that output to the migration above, you will notice that `battleCops` is set to the value found under the `/production/` path instead of the "76" found under `/default/`. You will also notice that we didn't need to define the other two values for production. 
+
+This is were gull shines. Instead of repeating configurations for separate environments, or building complicated override logic into your configuration management client, you can use etcd as a single source of truth. Gull will load all `/default/` values into any environment, and then override the defaults with any values specific to that environment.
+
+### Backing Out Configuration
+
+If you find that a configuration migration breaks a system, then gull can undo migrations one at a time.
+
+`gull down --application infall --environment production --etcdhost "http://localhost:2379/v2/keys"`
+
+Running this command will destroy all configuration for an environment and re-run all but the latest migration for an environment.
