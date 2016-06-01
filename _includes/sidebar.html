@@ -1,20 +1,18 @@
-<b><a href="{{ site.baseurl }}">Gull Docs</a></b>
-<br/>
-<br/>
-{% for group in site.sidebar_groups %}
-
-{% if group.index != null %}
-<b><a href="{{ group.index | prepend: site.baseurl }}.html">{{ group.name }}</a></b>
+{% if site.baseurl != "" %}
+    <b><a href="{{ site.baseurl }}">Gull Docs</a></b>
 {% else %}
-<b>{{ group.name}} </b>
+    <b><a href="/">Gull Docs</a></b>
 {% endif %}
-<ul>
-	{% for page in site.pages %}
-	  
-	  {% if (page.permalink != group.index) and (page.group == group.id or (page.group == null and page.title != null and page.permalink != 'index') %}
-	  	<li><a class="page-link" href="{{ site.baseurl }}{{ page.permalink }}.html">{{ page.title }}</a></li>
-	  {% endif %} 
-	  
-	{% endfor %}
-</ul>
+<br/>
+<br/>
+{% for version in site.doc_versions %}
+    <b>{{ version }}</b>
+    <ul>
+    	{% for page in site.pages %}
+    	  {% if (page.version == version || page.version == null) %}
+    	  	<li><a class="page-link" href="{{ site.baseurl }}{{ page.permalink }}.html">{{ page.title }}</a></li>
+    	  {% endif %} 
+    	  
+    	{% endfor %}
+    </ul>
 {% endfor %}

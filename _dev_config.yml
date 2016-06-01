@@ -7,13 +7,9 @@
 
 # Site settings
 title: Gull Docs
-baseurl: "/gull/" # the subpath of your site, e.g. /blog
+baseurl: "" # the subpath of your site, e.g. /blog
 # Build settings
 include: ['_pages']
 version: 1.4.2
 doc_versions: 
   - v0.10.0
-sidebar_groups:
-  - id: user
-    name: User Guide
-    index: user-guide
