@@ -1,0 +1,16 @@
+table.swagger-parameters{
+    border-collapse:collapse;
+    border: 1px solid grey;
+    width: 100%;
+}
+
+td,th{
+    padding: .5em .5em;
+    border-collapse:collapse;
+    border: 1px solid grey;   
+}
+
+td.swagger-required{
+    text-align:center; 
+    vertical-align:middle;
+}

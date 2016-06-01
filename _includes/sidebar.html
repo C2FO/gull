@@ -1,0 +1,20 @@
+<b><a href="{{ site.baseurl }}">Frenzy Docs</a></b>
+<br/>
+<br/>
+{% for group in site.sidebar_groups %}
+
+{% if group.index != null %}
+<b><a href="{{ group.index | prepend: site.baseurl }}.html">{{ group.name }}</a></b>
+{% else %}
+<b>{{ group.name}} </b>
+{% endif %}
+<ul>
+	{% for page in site.pages %}
+	  
+	  {% if (page.permalink != group.index) and (page.group == group.id or (page.group == null and page.title != null and page.permalink != 'index') %}
+	  	<li><a class="page-link" href="{{ site.baseurl }}{{ page.permalink }}.html">{{ page.title }}</a></li>
+	  {% endif %} 
+	  
+	{% endfor %}
+</ul>
+{% endfor %}

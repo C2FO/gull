@@ -1,0 +1,54 @@
+---
+layout: default
+---
+
+<h1>{{ page.title }}</h1>
+
+{{ content }}
+
+{% if page.data %}
+{% assign swagger = site.data[page.data] %}
+{% else %}
+{% assign swagger = page %}
+{% endif %}
+
+{% for route in swagger.paths %}
+
+<div class="page-content">
+{% assign method = route[1]['post'] %}
+    <h2>{{ route[0] }}</h2>
+    <p>{{ method.summary }}</p>
+    <table class="swagger-parameters">
+    	<thead>
+    	<tr>
+	    	<th>
+	    		Parameter
+	    	</th>
+	    	<th>
+	    		Description
+	    	</th>
+	    	<th>
+	    		Required
+	    	</th>
+    	</tr>
+    	</thead>
+    	<tbody>
+    	 {% for parameter in method.parameters %}
+          <tr>
+    		<td>
+    			{{ parameter.name }}
+    		</td>
+    		<td>
+    			{{ parameter.description }}
+    		</td>
+    		<td class="swagger-required">
+    		{% if parameter.required %}
+    			<h2>&#10003;</h2>
+    		{% endif %}
+    		</td>
+    	</tr>
+        {% endfor %}
+    	</tbody>
+    </table>
+{% endfor %}
+</div>
