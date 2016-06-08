@@ -27,7 +27,6 @@ func (sc *StatusCommand) GetFlags() []cli.Flag {
 			Name:   "environment, e",
 			Usage:  "system to target for configuration migration",
 			EnvVar: "GULL_ENVIRONMENT",
-			Value:  "default",
 		},
 		cli.StringFlag{
 			Name:   "etcdhost, s",
@@ -60,8 +59,9 @@ func (sc *StatusCommand) ParseOptions(context *cli.Context) {
 	}
 
 	sc.Environment = context.String("environment")
-	if sc.Environment == "default" {
+	if sc.Environment == "" {
 		sc.Logger.Info("No target environment was provided, using 'default'")
+		sc.Environment = "default"
 	}
 
 	sc.EtcdHostUrl = context.String("etcdhost")

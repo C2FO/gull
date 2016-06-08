@@ -1,11 +1,14 @@
 package gull
 
 import (
+	"bytes"
 	"fmt"
 	"io/ioutil"
+	"os"
 	"path"
 	"path/filepath"
 	"strings"
+	"text/template"
 	"time"
 
 	"github.com/go-yaml/yaml"
@@ -23,7 +26,12 @@ type Migration struct {
 func NewMigrationFromGull(name string, source string) (*Migration, error) {
 	migration := newMigration(name)
 
-	err := yaml.Unmarshal([]byte(source), &migration.Content)
+	sourceBytes, err := ingestMigrationTemplate(source)
+	if err != nil {
+		return nil, err
+	}
+
+	err = yaml.Unmarshal(sourceBytes, &migration.Content)
 
 	return migration, err
 }
@@ -88,6 +96,27 @@ func (m *Migration) WriteToFile(filePath string) error {
 	}
 
 	return ioutil.WriteFile(filePath, []byte(rawYaml), 0644)
+}
+
+// ingestMigrationTemplate searches environment variables prepended with 'GULL_TEMPLATE_VAR_' to token swap migration file contents.
+func ingestMigrationTemplate(source string) ([]byte, error) {
+	parsedTemplate, err := template.New("").Parse(source)
+	if err != nil {
+		return nil, err
+	}
+	var renderedTemplate bytes.Buffer
+	templateVariables := map[string]string{}
+	environmentVariables := os.Environ()
+	for _, env := range environmentVariables {
+		parts := strings.Split(env, "=")
+		envKey := parts[0]
+		envValue := parts[1]
+		if strings.Contains(envKey, "GULL_TEMPLATE_VAR_") {
+			templateVariables[strings.Replace(envKey, "GULL_TEMPLATE_VAR_", "", 1)] = envValue
+		}
+	}
+	err = parsedTemplate.Execute(&renderedTemplate, templateVariables)
+	return renderedTemplate.Bytes(), err
 }
 
 func migrationNameFromPath(filePath string) string {

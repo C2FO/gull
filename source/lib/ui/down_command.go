@@ -29,7 +29,6 @@ func (dc *DownCommand) GetFlags() []cli.Flag {
 			Name:   "environment, e",
 			Usage:  "system to target for configuration migration",
 			EnvVar: "GULL_ENVIRONMENT",
-			Value:  "default",
 		},
 		cli.StringFlag{
 			Name:   "etcdhost, s",
@@ -74,9 +73,10 @@ func (dc *DownCommand) ParseOptions(context *cli.Context) {
 	}
 
 	dc.Environment = context.String("environment")
-	if dc.Environment == "default" {
+	if dc.Environment == "" {
 		if dc.Verbose {
 			fmt.Printf("environment was not found, migrating 'default'\n")
+			dc.Environment = "default"
 		}
 	}
 

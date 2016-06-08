@@ -27,7 +27,6 @@ func (dc *DestroyCommand) GetFlags() []cli.Flag {
 			Name:   "environment, e",
 			Usage:  "system to target for configuration migration",
 			EnvVar: "GULL_ENVIRONMENT",
-			Value:  "default",
 		},
 		cli.StringFlag{
 			Name:   "etcdhost, s",
@@ -60,8 +59,9 @@ func (dc *DestroyCommand) ParseOptions(context *cli.Context) {
 	}
 
 	dc.Environment = context.String("environment")
-	if dc.Environment == "default" {
+	if dc.Environment == "" {
 		dc.Logger.Info("No target environment was provided, using 'default'")
+		dc.Environment = "default"
 	}
 
 	dc.EtcdHostUrl = context.String("etcdhost")
