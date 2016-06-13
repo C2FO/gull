@@ -24,7 +24,7 @@ func TestIntegrationConvertSuite(t *testing.T) {
 }
 
 func (suite *IntegrationConvertSuite) TestConvertConfigWithEnvironmentsAtTheRoot() {
-	transform, err := NewConvert(testdata.ConvertDestination1, false, false)
+	transform, err := NewConvert(testdata.ConvertDestination1, false, false, NewNullLogger())
 	assert.Nil(suite.T(), err)
 
 	err = transform.ConvertDirectory(testdata.ConvertSource1)

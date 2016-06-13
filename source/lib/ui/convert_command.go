@@ -15,6 +15,7 @@ type ConvertCommand struct {
 	Verbose               bool
 	FileNameIsEnvironment bool
 	JsonEncode            bool
+	Logger                gull.ILogger
 }
 
 func (cc *ConvertCommand) GetFlags() []cli.Flag {
@@ -63,6 +64,7 @@ func (cc *ConvertCommand) GetCliCommand() cli.Command {
 
 func (cc *ConvertCommand) ParseOptions(context *cli.Context) {
 	cc.Verbose = context.Bool("verbose")
+	cc.Logger = gull.NewLogger(cc.Verbose)
 	cc.FileNameIsEnvironment = context.Bool("filenameisenvironment")
 	cc.JsonEncode = context.Bool("jsonencode")
 
@@ -81,7 +83,7 @@ func (cc *ConvertCommand) ParseOptions(context *cli.Context) {
 }
 
 func (cc *ConvertCommand) Convert() {
-	convert, err := gull.NewConvert(cc.Destination, cc.FileNameIsEnvironment, cc.JsonEncode)
+	convert, err := gull.NewConvert(cc.Destination, cc.FileNameIsEnvironment, cc.JsonEncode, cc.Logger)
 	if err != nil {
 		if cc.Verbose {
 			fmt.Printf("An error occurred while instantiating a converter: [%+v]\n", err)

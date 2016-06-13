@@ -28,7 +28,7 @@ func TestIntegrationMigrateSuite(t *testing.T) {
 }
 
 func (suite *IntegrationMigrateSuite) TestMigrationStateStorageAndRetrieval() {
-	transform, err := NewConvert(testdata.ConvertDestination1, false, false)
+	transform, err := NewConvert(testdata.ConvertDestination1, false, false, NewNullLogger())
 	assert.Nil(suite.T(), err)
 
 	err = transform.ConvertDirectory(testdata.ConvertSource1)
@@ -55,7 +55,7 @@ func (suite *IntegrationMigrateSuite) TestMigrationStateStorageAndRetrieval() {
 }
 
 func (suite *IntegrationMigrateSuite) TestMigrateDown() {
-	transform, err := NewConvert(testdata.ConvertDestination1, false, false)
+	transform, err := NewConvert(testdata.ConvertDestination1, false, false, NewNullLogger())
 	assert.Nil(suite.T(), err)
 
 	err = transform.ConvertDirectory(testdata.ConvertSource1)
