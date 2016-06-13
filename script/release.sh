@@ -1,7 +1,6 @@
 #! /bin/bash
 
-
-set -x
+COMPILE_VARS="-X github.com/c2fo/gull/source/lib/common.ApplicationVersion=`cat ./VERSION.txt`"
 
 WORK=./gull-release
 rm -rf $WORK
@@ -10,13 +9,19 @@ mkdir -p $WORK
 
 SOURCE="github.com/c2fo/gull/source/bin/gull"
 
-export GOARCH=amd64
+build(){
+    OS=$1
+    SUFFIX=$2
 
-export GOOS=darwin
-go build -o $WORK/gull-mac64 -v $SOURCE
+    export GOOS=$OS
+    export GOARCH=amd64
 
-export GOOS=windows
-go build -o $WORK/gull-win64.exe -v $SOURCE
+    echo "=== Building $GOARCH/$GOOS"
 
-export GOOS=linux
-go build -o $WORK/gull-lin64 -v $SOURCE
+    OUTPUT="$WORK/gull-$SUFFIX"
+    go build -ldflags "$COMPILE_VARS" -o $OUTPUT $SOURCE
+}
+
+build darwin mac64
+build windows win64.exe
+build linux lin64

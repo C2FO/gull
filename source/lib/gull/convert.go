@@ -12,9 +12,10 @@ type Convert struct {
 	DestinationDir        string
 	FileNameIsEnvironment bool
 	JsonEncode            bool
+	Logger                ILogger
 }
 
-func NewConvert(destinationDir string, fileNameIsEnvironment bool, jsonEncode bool) (*Convert, error) {
+func NewConvert(destinationDir string, fileNameIsEnvironment bool, jsonEncode bool, logger ILogger) (*Convert, error) {
 	err := os.MkdirAll(destinationDir, 0755)
 	if err != nil {
 		return nil, err
@@ -23,6 +24,7 @@ func NewConvert(destinationDir string, fileNameIsEnvironment bool, jsonEncode bo
 		DestinationDir:        destinationDir,
 		FileNameIsEnvironment: fileNameIsEnvironment,
 		JsonEncode:            jsonEncode,
+		Logger:                logger,
 	}, nil
 }
 
@@ -40,6 +42,7 @@ func (c *Convert) ConvertFile(filePath string) error {
 	}
 	name := GetMigrationNameFromConfigName(filePath)
 	destPath := filepath.Join(c.DestinationDir, name)
+	c.Logger.Info("Converting [%v] to [%v]", filePath, destPath)
 	err = migration.WriteToFile(destPath)
 	return err
 }

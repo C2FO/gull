@@ -5,6 +5,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/c2fo/gull/source/lib/common"
 	"github.com/codegangsta/cli"
 )
 
@@ -17,7 +18,7 @@ type GullCommand interface {
 func Launch() {
 	app := cli.NewApp()
 	app.Name = "gull"
-	app.Version = "0.11.0"
+	app.Version = common.GetApplicationVersion()
 	app.Usage = "etcd configuration migration management system"
 	app.Commands = []cli.Command{
 		new(ConvertCommand).GetCliCommand(),

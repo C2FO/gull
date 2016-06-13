@@ -1,7 +1,7 @@
 SOURCE := ./source/...
 
-build: installdeps
-	go install -v $(SOURCE)
+build: installdeps	
+	go install -ldflags "-X github.com/c2fo/gull/source/lib/common.ApplicationVersion=`cat ./VERSION.txt`" -v $(SOURCE)
 
 installdeps: 
 	glide install
