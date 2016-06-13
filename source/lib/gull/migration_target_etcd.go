@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/url"
+	"strings"
 
 	"github.com/franela/goreq"
 )
@@ -27,6 +28,7 @@ type etcdPair struct {
 }
 
 func NewEtcdMigrationTarget(hostUrl string, application string, environment string, performFullMigration bool, logger ILogger) *EtcdMigrationTarget {
+	hostUrl = formatEtcdHostUrl(hostUrl)
 	return &EtcdMigrationTarget{
 		EtcdHostUrl:   hostUrl,
 		Application:   application,
@@ -34,6 +36,30 @@ func NewEtcdMigrationTarget(hostUrl string, application string, environment stri
 		FullMigration: performFullMigration,
 		logger:        logger,
 	}
+}
+
+func formatEtcdHostUrl(url string) string {
+	etcdTwoDefaultPort := 2379
+	// Add a port if one wasn't specified
+	if !strings.Contains(url, ":") {
+		head := strings.Split(url, "/")[0]
+		headWithPort := fmt.Sprintf("%v:%v", head, etcdTwoDefaultPort)
+		url = strings.Replace(url, head, headWithPort, 1)
+	}
+	// Default to HTTP if none specified
+	if !strings.Contains(url, "://") {
+		url = fmt.Sprintf("http://%v", url)
+	}
+	// Add the resource locator etcd2 expects
+	etcdTwoResource := "v2/keys"
+	if !strings.Contains(url, etcdTwoResource) {
+		lastSlash := strings.LastIndex(url, "/")
+		if lastSlash != len(url)-1 {
+			etcdTwoResource = fmt.Sprintf("/%v", etcdTwoResource)
+		}
+		url = url + etcdTwoResource
+	}
+	return url
 }
 
 func (emt *EtcdMigrationTarget) Set(path string, value string) error {
@@ -58,7 +84,7 @@ func (emt *EtcdMigrationTarget) Set(path string, value string) error {
 			}
 		}
 	} else {
-		return fmt.Errorf("etcd did not sent a response on a PUT for [%v]->[%v]", path, value)
+		return fmt.Errorf("etcd [%v] did not sent a response on a PUT for [%v]->[%v]", emt.EtcdHostUrl, path, value)
 	}
 	return err
 }

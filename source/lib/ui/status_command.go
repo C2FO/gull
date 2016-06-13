@@ -30,7 +30,7 @@ func (sc *StatusCommand) GetFlags() []cli.Flag {
 		},
 		cli.StringFlag{
 			Name:   "etcdhost, s",
-			Usage:  "url to the system running etcd in the format 'http://localhost:2379/v2/keys'",
+			Usage:  "url to the system running etcd",
 			EnvVar: "GULL_ETCD_HOST",
 			Value:  common.DefaultEtcdServerUrl,
 		},

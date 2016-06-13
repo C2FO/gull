@@ -11,6 +11,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 
+	"github.com/c2fo/gull/source/lib/common"
 	"github.com/c2fo/gull/source/lib/gull/testdata"
 )
 
@@ -21,7 +22,7 @@ type IntegrationMigrateSuite struct {
 
 func TestIntegrationMigrateSuite(t *testing.T) {
 	migrateSuite := &IntegrationMigrateSuite{
-		Target: NewEtcdMigrationTarget(testdata.ValidEtcdHostUrl, "gull", "default", true, NewNullLogger()),
+		Target: NewEtcdMigrationTarget(common.DefaultEtcdServerUrl, "gull", "default", true, NewNullLogger()),
 	}
 	suite.Run(t, migrateSuite)
 	_ = os.RemoveAll(testdata.ConvertDestination1)
