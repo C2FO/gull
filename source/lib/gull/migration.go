@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"path"
 	"path/filepath"
 	"strings"
 	"text/template"
@@ -80,7 +79,8 @@ func GetMigrationNameFromConfigName(filePath string) string {
 	name := migrationNameFromPath(filePath)
 	name = strings.Replace(name, ".json", "", 1)
 	name = strings.Replace(name, " ", "-", -1)
-	return fmt.Sprintf("%v-%v.%v", id, name, "yaml")
+	result := fmt.Sprintf("%v-%v.%v", id, name, "yaml")
+	return result
 }
 
 func (m *Migration) ConvertToYaml() (string, error) {
@@ -120,7 +120,9 @@ func ingestMigrationTemplate(source string) ([]byte, error) {
 }
 
 func migrationNameFromPath(filePath string) string {
-	return strings.Replace(strings.Replace(path.Base(filePath), ".yaml", "", 1), ".yml", "", 1)
+	result := filepath.Base(filePath)
+	result = strings.Replace(result, ".yaml", "", 1)
+	return strings.Replace(result, ".yml", "", 1)
 }
 
 func newMigration(name string) *Migration {
